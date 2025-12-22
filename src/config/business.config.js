@@ -15,11 +15,14 @@ export const BUSINESS_CONFIG = {
   WORKDAY_END: process.env.WORKDAY_END ?? "20:00",
 
   // слоти - тривалості в хвилинах
-  SLOT_STEP_MINUTES: toInt(process.env.SLOT_STEP_MINUTES, 15),
+  SLOT_STEP_MINUTES: toInt(process.env.SLOT_STEP_MINUTES, 15), // інтервал між слотами
 
   // ресурси
-  PORTAL_WASH_COUNT: toInt(process.env.PORTAL_WASH_COUNT, 2),
-  SERVICE_BOX_COUNT: toInt(process.env.SERVICE_BOX_COUNT, 1),
+  PORTAL_WASH_COUNT: toInt(process.env.PORTAL_WASH_COUNT, 2), // кількість портальних мийок
+  MANUAL_WASH_COUNT: toInt(process.env.MANUAL_WASH_COUNT, 2), // кількість ручних мийок
+  OIL_CHANGE_BAYS: toInt(process.env.OIL_CHANGE_BAYS, 1), // кількість майданчиків для заміни оливи
+  TIRE_SERVICE_BAYS: toInt(process.env.TIRE_SERVICE_BAYS, 1), // кількість майданчиків для шиномонтажу
+  SERVICE_BOX_COUNT: toInt(process.env.SERVICE_BOX_COUNT, 1), // кількість сервісних боксів
 
   // нагадування
   REMINDER_ENABLED: toBool(process.env.REMINDER_ENABLED, true),

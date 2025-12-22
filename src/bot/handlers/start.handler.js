@@ -6,7 +6,7 @@ export async function startHandler(ctx) {
   const session = getSession(ctx.chat.id);
 
   session.step = STEPS.SERVICE;
-  session.data = {};
+  session.data ??= {}; //ініціалізуємо дані сесії, якщо вони не існують
 
   await ctx.reply(
     "👋 Вітаємо! Цей бот допоможе швидко записатися на послуги.\n\nОберіть послугу:",
