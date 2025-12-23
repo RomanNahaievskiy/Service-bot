@@ -1,54 +1,47 @@
-// const BOOKINGS = [];
-
-// export function createBooking(data) {
-//   const booking = {
-//     id: Date.now(),
-//     ...data,
-//     createdAt: new Date(),
-//   };
-
-//   BOOKINGS.push(booking);
-//   return booking;
-// }
-
 import { sheetsApi } from "../../integrations/sheetsApi.js";
 
 export async function createBooking(data) {
-  // data: { chatId, service, vehicle, vehicleNumber, date, time, fullName?, phone? }
+  const dateObj = data.date; // Очікуємо Date об'єкт
+  if (!(dateObj instanceof Date)) {
+    throw new Error("Invalid date object in session");
+  }
 
-  // ⬇️ адаптуй під свої формати:
-  // date: "2025-12-24" або спеціальний код типу DATE_TOMORROW
-  // time: "15:45"
-  // тут я припущу, що session.data.date вже у форматі YYYY-MM-DD
-  const startsAt = `${data.date}T${data.time}:00+02:00`;
+  const timeHHMM = extractTimeHHMM(data.time); // TIME_15:45 → 15:45
 
-  // end time (приклад: 30 хв)
-  const endsAt = addMinutesISO(startsAt, 30);
+  // Формуємо start
+  const start = new Date(dateObj);
+  const [hh, mm] = timeHHMM.split(":");
+  start.setHours(Number(hh), Number(mm), 0, 0);
+
+  if (Number.isNaN(start.getTime())) {
+    throw new Error("Invalid start datetime");
+  }
+
+  // +30 хв (можна потім зробити по сервісу)
+  const end = new Date(start);
+  end.setMinutes(end.getMinutes() + 30);
 
   return await sheetsApi.createBooking({
     tgId: String(data.chatId),
     fullName: data.fullName || "—",
     phone: data.phone || "",
-    service: String(data.service), // можна потім мапнути на людську назву
-    startsAt,
-    endsAt,
-    vehicle: `${data.vehicle || ""} ${data.vehicleNumber || ""}`.trim(),
+    service: normalize(data.service),
+    startsAt: start.toISOString(),
+    endsAt: end.toISOString(),
+    vehicle: `${normalize(data.vehicle)} ${data.vehicleNumber || ""}`.trim(),
     comment: "",
   });
 }
 
-function addMinutesISO(iso, minutes) {
-  const d = new Date(iso);
-  d.setMinutes(d.getMinutes() + minutes);
-  // повернемо ISO без Z, але з часовим поясом краще тримати як +02:00 вхідний;
-  // для простоти — повернемо Z (GAS нормально прийме)
-  return d.toISOString();
+function extractTimeHHMM(time) {
+  const s = String(time || "");
+  const m = s.match(/^TIME_(\d{1,2}:\d{2})$/);
+  if (m) return m[1];
+  throw new Error(`Invalid time format: ${s}`);
 }
 
-//Пізніше:
-
-// замінимо на БД
-
-// додамо перевірку конфліктів
-
-// підключимо нагадування
+function normalize(v) {
+  if (!v) return "";
+  if (typeof v === "string") return v;
+  return v.title || v.name || "";
+}
