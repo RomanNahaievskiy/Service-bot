@@ -1,14 +1,13 @@
-import { env } from "../config/env.js";
+import { ENV } from "../config/env.js";
 
 async function callSheets(action, payload = {}) {
-  if (!env.SHEETS_API_URL) throw new Error("SHEETS_API_URL is missing");
-  if (!env.SHEETS_API_TOKEN) throw new Error("SHEETS_API_TOKEN is missing");
-
-  const res = await fetch(env.SHEETS_API_URL, {
+  if (!ENV.SHEETS_API_URL) throw new Error("SHEETS_API_URL is missing");
+  if (!ENV.SHEETS_API_TOKEN) throw new Error("SHEETS_API_TOKEN is missing");
+  const res = await fetch(ENV.SHEETS_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      token: env.SHEETS_API_TOKEN,
+      token: ENV.SHEETS_API_TOKEN,
       action,
       payload,
     }),
