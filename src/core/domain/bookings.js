@@ -5,6 +5,7 @@ export async function createBooking(data) {
   if (!(dateObj instanceof Date)) {
     throw new Error("Invalid date object in session");
   }
+  console.log("DEBUG time raw:", session.data.time); //test
 
   const timeHHMM = extractTimeHHMM(data.time); // TIME_15:45 → 15:45
 
@@ -34,9 +35,20 @@ export async function createBooking(data) {
 }
 
 function extractTimeHHMM(time) {
-  const s = String(time || "");
-  const m = s.match(/^TIME_(\d{1,2}:\d{2})$/);
-  if (m) return m[1];
+  const s = String(time || "").trim();
+
+  // TIME_19:00 -> 19:00
+  let m = s.match(/^TIME_(\d{1,2}):(\d{2})$/);
+  if (m) return `${m[1].padStart(2, "0")}:${m[2]}`;
+
+  // 19:00 -> 19:00
+  m = s.match(/^(\d{1,2}):(\d{2})$/);
+  if (m) return `${m[1].padStart(2, "0")}:${m[2]}`;
+
+  // 19:00:00 -> 19:00
+  m = s.match(/^(\d{1,2}):(\d{2}):\d{2}$/);
+  if (m) return `${m[1].padStart(2, "0")}:${m[2]}`;
+
   throw new Error(`Invalid time format: ${s}`);
 }
 
