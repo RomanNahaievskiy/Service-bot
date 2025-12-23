@@ -23,7 +23,7 @@ export async function vehicleTypeHandler(ctx) {
   await ctx.editMessageText(
     `🚘 Тип ТЗ: ${vehicle.title}\n\nВведіть дані транспортного засобу (номер):`,
     Markup.inlineKeyboard([
-      [Markup.button.callback("⬅️ Назад", "BACK_TO_VEHICLE")],
+      // [Markup.button.callback("⬅️ Назад", "BACK_TO_VEHICLE")], // не спрацьовує, бо в роутері в цій точці спрацьовує bot.on("Text")
     ])
   );
 }
