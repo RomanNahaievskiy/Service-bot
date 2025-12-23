@@ -6,8 +6,9 @@ import { Markup } from "telegraf";
 
 export async function confirmHandler(ctx) {
   console.log("✅ confirmHandler");
-  console.log("DEBUG time raw:", session.data.time); //test
+
   const session = getSession(ctx.chat.id);
+  console.log("DEBUG time raw:", session.data.time); //test
 
   // FSM guard
   if (session.step !== STEPS.CONFIRM) {
