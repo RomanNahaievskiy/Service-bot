@@ -38,7 +38,7 @@ export async function confirmHandler(ctx) {
     return ctx.editMessageText(
       "❌ Не вдалося створити запис. Спробуйте ще раз або оберіть інший час.",
       Markup.inlineKeyboard([
-        [Markup.button.callback("🔁 Обрати інший час", "TIME_SELECT")],
+        [Markup.button.callback("🔁 Обрати інший час", "BACK_TO_DATE")],
         [Markup.button.callback("➕ Новий запис", "START_OVER")],
       ])
     );
