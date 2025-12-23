@@ -1,14 +1,20 @@
-const BOOKINGS = [];
+// const BOOKINGS = [];
 
-export function createBooking(data) {
-  const booking = {
-    id: Date.now(),
-    ...data,
-    createdAt: new Date(),
-  };
+// export function createBooking(data) {
+//   const booking = {
+//     id: Date.now(),
+//     ...data,
+//     createdAt: new Date(),
+//   };
 
-  BOOKINGS.push(booking);
-  return booking;
+//   BOOKINGS.push(booking);
+//   return booking;
+// }
+
+import { sheetsApi } from "../../integrations/sheetsApi.js";
+
+export async function createBooking(data) {
+  return await sheetsApi.createBooking(data);
 }
 
 //Пізніше:

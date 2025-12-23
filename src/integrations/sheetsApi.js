@@ -1,31 +1,35 @@
 import { env } from "../config/env.js";
 
-export async function sheetsCreateBooking(payload) {
+async function callSheets(action, payload = {}) {
+  if (!env.SHEETS_API_URL) throw new Error("SHEETS_API_URL is missing");
+  if (!env.SHEETS_API_TOKEN) throw new Error("SHEETS_API_TOKEN is missing");
+
   const res = await fetch(env.SHEETS_API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${env.SHEETS_API_TOKEN}`,
-    },
-    body: JSON.stringify({ action: "create", payload }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      token: env.SHEETS_API_TOKEN,
+      action,
+      payload,
+    }),
   });
 
-  const data = await res.json();
+  const text = await res.text();
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error("Sheets API returned non-JSON: " + text.slice(0, 200));
+  }
+
   if (!data.ok) throw new Error(data.error || "Sheets API error");
   return data.data;
 }
 
-export async function sheetsListBookings({ tgId, status } = {}) {
-  const url = new URL(env.SHEETS_API_URL);
-  url.searchParams.set("action", "list");
-  if (tgId) url.searchParams.set("tgId", String(tgId));
-  if (status) url.searchParams.set("status", String(status));
-
-  const res = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${env.SHEETS_API_TOKEN}` },
-  });
-
-  const data = await res.json();
-  if (!data.ok) throw new Error(data.error || "Sheets API error");
-  return data.data;
-}
+export const sheetsApi = {
+  createBooking: (payload) => callSheets("create", payload),
+  updateStatus: (id, status, admin = "") =>
+    callSheets("update_status", { id, status, admin }),
+  cancel: (id) => callSheets("cancel", { id }),
+};
