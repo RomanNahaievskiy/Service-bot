@@ -5,7 +5,6 @@ export async function createBooking(data) {
   if (!(dateObj instanceof Date)) {
     throw new Error("Invalid date object in session");
   }
-  console.log("DEBUG time raw:", session.data.time); //test
 
   const timeHHMM = extractTimeHHMM(data.time); // TIME_15:45 → 15:45
 
