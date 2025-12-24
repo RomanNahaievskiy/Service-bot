@@ -9,6 +9,12 @@ export async function startOverHandler(ctx) {
 
   await ctx.answerCbQuery(); // Підтвердження обробки колбеку для телеграма
 
+  const session = getSession(ctx.chat.id);
+  session.step = STEPS.SERVICE; // Встановлюємо крок на SERVICE
+  session.data ??= {}; //ініціалізуємо дані сесії, якщо вони не існують
+  session.data.fullName ??=
+    ctx.from.first_name + (ctx.from.last_name ? " " + ctx.from.last_name : "");
+
   await ctx.reply(
     "🔄 Починаємо спочатку.\n\nОберіть послугу:",
     Markup.inlineKeyboard([
