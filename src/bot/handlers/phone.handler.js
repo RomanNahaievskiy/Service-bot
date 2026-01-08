@@ -2,12 +2,18 @@ import { STEPS } from "../../core/fsm/steps.js";
 import { getSession } from "../../utils/helpers.js";
 
 export async function phoneHandler(ctx) {
-  console.log(" phoneHandler", ctx.callbackQuery.data); //test
+  console.log("📱 phoneHandler"); // test debug
   const session = getSession(ctx.chat.id);
 
   if (session.step !== STEPS.PHONE) return;
 
   const contact = ctx.message.contact;
+
+  if (!contact?.phone_number) {
+    return ctx.reply(
+      "❗ Не бачу номера. Натисніть кнопку «📱 Надіслати номер»."
+    );
+  }
 
   // 🔐 Захист: приймаємо тільки власний номер
   if (contact.user_id && contact.user_id !== ctx.from.id) {
