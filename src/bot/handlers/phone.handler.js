@@ -1,5 +1,6 @@
 import { STEPS } from "../../core/fsm/steps.js";
 import { getSession } from "../../utils/helpers.js";
+import { Markup } from "telegraf";
 
 export async function phoneHandler(ctx) {
   console.log("📱 phoneHandler"); // test debug
