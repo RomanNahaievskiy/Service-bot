@@ -5,6 +5,7 @@ export const STEPS = {
   VEHICLE_DATA: "VEHICLE_DATA",
   DATE: "DATE",
   TIME: "TIME",
+  PHONE: "PHONE",
   CONFIRM: "CONFIRM",
   DONE: "DONE",
 };

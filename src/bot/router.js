@@ -5,6 +5,8 @@ import { vehicleDataHandler } from "./handlers/vehicleData.handler.js";
 import { dateHandler } from "./handlers/date.handlers.js";
 import { timeHandler } from "./handlers/time.handler.js";
 import { timeSelectHandler } from "./handlers/timeSelect.handler.js";
+import { askPhoneHandler } from "./handlers/askPhone.handler.js";
+import { phoneHandler } from "./handlers/phone.handler.js";
 import { confirmHandler } from "./handlers/confirm.handler.js";
 import { startOverHandler } from "./handlers/startOver.handler.js";
 import { backToServiceHandler } from "./handlers/backToService.handler.js";
@@ -37,6 +39,7 @@ export function registerRoutes(bot) {
 
   // обробка текстових повідомлень (завжди вкінці) для введення даних ТЗ
   bot.on("text", vehicleDataHandler); //Обробка текстових повідомлень
+  bot.on("contact", phoneHandler); //Обробка контактів (номер телефону)
 }
 
 // DIAGNOSTICS:

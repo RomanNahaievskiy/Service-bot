@@ -1,0 +1,43 @@
+import { STEPS } from "../../core/fsm/steps.js";
+import { getSession } from "../../utils/helpers.js";
+
+export async function phoneHandler(ctx) {
+  console.log(" phoneHandler", ctx.callbackQuery.data); //test
+  const session = getSession(ctx.chat.id);
+
+  if (session.step !== STEPS.PHONE) return;
+
+  const contact = ctx.message.contact;
+
+  // 🔐 Захист: приймаємо тільки власний номер
+  if (contact.user_id && contact.user_id !== ctx.from.id) {
+    return ctx.reply("❗ Будь ласка, надішліть *свій* номер телефону.");
+  }
+
+  session.data.phone = contact.phone_number;
+  session.data.fullName = `${contact.first_name || ""} ${
+    contact.last_name || ""
+  }`.trim();
+
+  session.step = STEPS.CONFIRM;
+
+  await ctx.reply(
+    "✅ Дякую! Номер збережено.\n\nПереходимо до підтвердження запису 👇",
+    { reply_markup: { remove_keyboard: true } }
+  );
+
+  // тут можна одразу викликати confirmHandler або показати summary
+  await ctx.editMessageText(
+    // Показуємо підсумок запису
+    `✅ Запис:\n  
+Послуга: ${session.data.service.title}
+ТЗ: ${session.data.vehicle.title}
+Номер: ${session.data.vehicleNumber}
+Дата: ${session.data.date.toLocaleDateString("uk-UA")}
+Час: ${time}`,
+    Markup.inlineKeyboard([
+      [Markup.button.callback("✅ Підтвердити", "CONFIRM")], // Кнопка підтвердження
+      [Markup.button.callback("⬅️ Назад", "BACK_TO_TIME")],
+    ])
+  );
+}
