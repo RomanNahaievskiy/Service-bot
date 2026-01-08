@@ -34,6 +34,18 @@ export async function timeHandler(ctx) {
     leadTimeMinutes: 0, // можна 10
   });
 
+  if (!slots || slots.length === 0) {
+    return ctx.editMessageText(
+      `😕 На цю дату немає вільних слотів.\n\n` +
+        `Спробуйте обрати іншу дату або змінити послугу.`,
+      Markup.inlineKeyboard([
+        [Markup.button.callback("📅 Обрати іншу дату", "BACK_TO_DATE")],
+        [Markup.button.callback("⬅️ Назад", "BACK_TO_VEHICLE_DATA")],
+        [Markup.button.callback("➕ Новий запис", "START_OVER")],
+      ])
+    );
+  }
+
   const keyboard = [];
   for (let i = 0; i < slots.length; i += 3) {
     keyboard.push(
