@@ -31,4 +31,7 @@ export const sheetsApi = {
   updateStatus: (id, status, admin = "") =>
     callSheets("update_status", { id, status, admin }),
   cancel: (id) => callSheets("cancel", { id }),
+  // ✅ додай
+  listBookings: ({ dateISO, status } = {}) =>
+    callSheets("list", { dateISO, status }),
 };

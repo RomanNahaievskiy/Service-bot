@@ -1,6 +1,7 @@
 import { STEPS } from "../../core/fsm/steps.js";
 import { getSession } from "../../utils/helpers.js";
-import { generateDaySlots } from "../../core/domain/slots.js";
+// import { generateDaySlots } from "../../core/domain/slots.js";
+import { getFreeDaySlots } from "../../core/domain/slots.js";
 import { BUSINESS_CONFIG } from "../../config/business.config.js";
 import { Markup } from "telegraf";
 
@@ -25,7 +26,7 @@ export async function timeHandler(ctx) {
     return;
   }
 
-  const slots = generateDaySlots({
+  const slots = await getFreeDaySlots({
     serviceDuration: service.duration, // ✅ звідси
     slotStep: BUSINESS_CONFIG.SLOT_STEP_MINUTES, // ✅ крок
     forDate, // ✅ дата
