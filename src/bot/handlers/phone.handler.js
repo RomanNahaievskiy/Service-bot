@@ -40,7 +40,7 @@ export async function phoneHandler(ctx) {
 ТЗ: ${session.data.vehicle.title}
 Номер: ${session.data.vehicleNumber}
 Дата: ${session.data.date.toLocaleDateString("uk-UA")}
-Час: ${time}`,
+Час: ${session.data.time}`,
     Markup.inlineKeyboard([
       [Markup.button.callback("✅ Підтвердити", "CONFIRM")], // Кнопка підтвердження
       [Markup.button.callback("⬅️ Назад", "BACK_TO_TIME")],
