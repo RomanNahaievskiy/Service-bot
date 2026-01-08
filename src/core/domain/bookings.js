@@ -28,8 +28,8 @@ export async function createBooking(data) {
     fullName: data.fullName || "—",
     phone: data.phone || "",
     service: normalize(data.service),
-    startsAt: start.toISOString(),
-    endsAt: end.toISOString(),
+    startsAt: toKyivISO(start), // у форматі ISO з часовою зоною Києва замість start.toISOString()
+    endsAt: toKyivISO(end), // у форматі ISO з часовою зоною Києва замість end.toISOString()
     vehicle: `${normalize(data.vehicle)} ${data.vehicleNumber || ""}`.trim(),
     comment: "",
   });
