@@ -34,7 +34,7 @@ export async function phoneHandler(ctx) {
   );
 
   // тут можна одразу викликати confirmHandler або показати summary
-  await ctx.editMessageText(
+  await ctx.reply(
     // Показуємо підсумок запису
     `✅ Запис:\n  
 Послуга: ${session.data.service.title}
