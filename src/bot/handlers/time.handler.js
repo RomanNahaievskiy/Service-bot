@@ -34,6 +34,8 @@ export async function timeHandler(ctx) {
     leadTimeMinutes: 0, // можна 10
   });
 
+  await ctx.answerCbQuery();
+
   if (!slots || slots.length === 0) {
     return ctx.editMessageText(
       `😕 На цю дату немає вільних слотів.\n\n` +
@@ -55,8 +57,6 @@ export async function timeHandler(ctx) {
     );
   }
   keyboard.push([Markup.button.callback("⬅️ Назад", "BACK_TO_DATE")]);
-
-  await ctx.answerCbQuery();
 
   await ctx.editMessageText(
     "⏰ Оберіть зручний час:",

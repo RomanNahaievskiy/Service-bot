@@ -91,7 +91,12 @@ export async function getFreeDaySlots({
   const dateISO = toYYYYMMDD(forDate);
 
   // 1) тягнемо бронювання за дату
-  const bookings = await sheetsApi.listBookings({ dateISO, status });
+  const bookingsRaw = await sheetsApi.listBookings({ dateISO });
+
+  const bookings = (bookingsRaw || []).filter((b) => {
+    const st = String(b.status || "").toLowerCase();
+    return st === "new" || st === "approved";
+  });
 
   // 2) перетворюємо бронювання в "хвилини дня"
   const busy = (bookings || [])
@@ -113,4 +118,21 @@ export async function getFreeDaySlots({
     const eMin = timeToMinutes(slot.end);
     return !busy.some((b) => overlaps(sMin, eMin, b.startMin, b.endMin));
   });
+}
+
+// helpers
+// допоміжні функції:
+
+function minutesInTz(isoString, timeZone = "Europe/Kyiv") {
+  const d = new Date(isoString);
+  const parts = new Intl.DateTimeFormat("uk-UA", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(d);
+
+  const hh = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+  const mm = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+  return hh * 60 + mm;
 }

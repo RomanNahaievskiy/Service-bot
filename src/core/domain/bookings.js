@@ -1,4 +1,5 @@
 import { sheetsApi } from "../../integrations/sheetsApi.js";
+import { toKyivISO } from "../../utils/helpers.js";
 
 export async function createBooking(data) {
   const dateObj = data.date; // Очікуємо Date об'єкт
@@ -17,9 +18,10 @@ export async function createBooking(data) {
     throw new Error("Invalid start datetime");
   }
 
-  // +30 хв (можна потім зробити по сервісу)
+  // ✅ тривалість з послуги
+  const duration = Number(data.service?.duration ?? 30);
   const end = new Date(start);
-  end.setMinutes(end.getMinutes() + 30);
+  end.setMinutes(end.getMinutes() + duration);
 
   return await sheetsApi.createBooking({
     tgId: String(data.chatId),
