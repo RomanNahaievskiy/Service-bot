@@ -71,8 +71,7 @@ export async function timeHandler(ctx) {
     });
 
     const slots = await getFreeDaySlots({
-      forDate,
-      date,
+      forDate: date,
       serviceDuration: durationMin,
     });
 
