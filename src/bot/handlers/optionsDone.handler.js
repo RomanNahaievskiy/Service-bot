@@ -27,6 +27,7 @@ export async function optionsDoneHandler(ctx) {
   }
 
   try {
+    console.log("DBG", { vehicleId, group, optionIds, step: session.step }); // debug
     const pricing = await calcPricing({ vehicleId, group, optionIds });
 
     session.data.pricing = {
