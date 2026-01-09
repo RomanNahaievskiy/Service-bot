@@ -26,12 +26,43 @@ async function callSheets(action, payload = {}) {
   return data.data;
 }
 
+async function callSheetsGet(action, params = {}) {
+  if (!ENV.SHEETS_API_URL) throw new Error("SHEETS_API_URL is missing");
+  if (!ENV.SHEETS_API_TOKEN) throw new Error("SHEETS_API_TOKEN is missing");
+
+  const url = new URL(ENV.SHEETS_API_URL);
+  url.searchParams.set("action", action);
+  url.searchParams.set("token", ENV.SHEETS_API_TOKEN);
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== null) url.searchParams.set(k, String(v));
+  }
+
+  const res = await fetch(url.toString(), { method: "GET" });
+
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error("Sheets API returned non-JSON: " + text.slice(0, 200));
+  }
+
+  if (!data.ok) throw new Error(data.error || "Sheets API error");
+  return data.data;
+}
+
 export const sheetsApi = {
+  // call via POST
+  // створити бронювання
   createBooking: (payload) => callSheets("create", payload),
+  // оновити статус бронювання
   updateStatus: (id, status, admin = "") =>
     callSheets("update_status", { id, status, admin }),
+  // скасувати бронювання
   cancel: (id) => callSheets("cancel", { id }),
-  // ✅ додай
+  // отримати список бронювань за датою та статусом
   listBookings: ({ dateISO, status } = {}) =>
     callSheets("list", { dateISO, status }),
+  // get prices via GET
+  pricesGet: () => callSheetsGet("prices_get"),
 };

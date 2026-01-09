@@ -1,20 +1,20 @@
-import { Markup } from "telegraf";
 import { STEPS } from "../../core/fsm/steps.js";
-import { getSession } from "../../utils/helpers.js";
+import { getSession, resetSession } from "../../utils/helpers.js";
+import { renderStep } from "../render/renderStep.js";
 
 export async function startHandler(ctx) {
+  console.log("🚀 /start");
+
+  // скидаємо сесію під цього користувача
+  resetSession(ctx.chat.id);
+
   const session = getSession(ctx.chat.id);
 
+  // стартовий крок сценарію
   session.step = STEPS.SERVICE;
-  session.data ??= {}; //ініціалізуємо дані сесії, якщо вони не існують
-  session.data.fullName ??=
-    ctx.from.first_name + (ctx.from.last_name ? " " + ctx.from.last_name : "");
-  await ctx.reply(
-    `👋 Вітаємо! ${session.data.fullName} Цей бот допоможе швидко записатися на послуги.\n\nОберіть послугу:`,
-    Markup.inlineKeyboard([
-      [Markup.button.callback("🚿 Мийка", "SERVICE_WASH")],
-      [Markup.button.callback("✨ Детейлінг", "SERVICE_DETAILING")],
-      [Markup.button.callback("🔧 Ремонт", "SERVICE_REPAIR")],
-    ])
-  );
+
+  // щоб не було "нема куди назад"
+  session.history = [];
+
+  return renderStep(ctx, session);
 }

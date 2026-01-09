@@ -7,6 +7,7 @@ export function getSession(chatId) {
     sessions.set(chatId, {
       step: STEPS.START,
       data: {},
+      history: [], // Історія кроків користувача
     });
   }
   return sessions.get(chatId);
@@ -17,6 +18,7 @@ export function resetSession(chatId) {
   sessions.set(chatId, {
     step: STEPS.START,
     data: {},
+    history: [], // Історія кроків користувача
   });
 }
 
