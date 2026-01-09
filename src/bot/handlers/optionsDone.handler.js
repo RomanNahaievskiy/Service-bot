@@ -1,7 +1,7 @@
-import { calcPricing } from "../../core/services/pricing.service.js"; // шлях під себе
+import { calcPricing } from "../../core/services/pricing.service.js";
 import { renderStep } from "../render/renderStep.js";
 import { goToStep } from "../../core/fsm/transition.js";
-import { STEPS } from "../fsm/steps.js"; // або константи кроків
+import { STEPS } from "../../core/fsm/steps.js"; // або константи кроків
 
 export async function optionsDoneHandler(ctx) {
   console.log("✅ optionsDoneHandler triggered");
