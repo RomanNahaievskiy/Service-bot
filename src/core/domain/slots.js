@@ -112,6 +112,21 @@ export async function getFreeDaySlots({
     })
     .filter(Boolean);
 
+  console.log("DBG dateISO", dateISO, "serviceDuration", serviceDuration);
+  console.log(
+    "DBG allSlots",
+    allSlots.length,
+    "first",
+    allSlots[0],
+    "last",
+    allSlots.at(-1)
+  );
+  console.log(
+    "DBG bookingsRaw",
+    Array.isArray(bookingsRaw) ? bookingsRaw.length : bookingsRaw
+  );
+  console.log("DBG busy", busy.length, busy.slice(0, 3));
+
   // 3) фільтруємо слоти, що перетинаються
   return allSlots.filter((slot) => {
     const sMin = timeToMinutes(slot.start);
