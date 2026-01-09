@@ -1,24 +1,17 @@
 import { Markup } from "telegraf";
 import { safeEditOrReply } from "./safeEditOrReply.js";
+import { SERVICES } from "../../core/domain/services.js";
 
 /**
  * Рендер кроку вибору послуги
- * Очікує:
- * session.data.prices.services (з GAS prices_get)
+ * Джерело: core/domain/services.js (статичні послуги)
  */
 export async function renderService(ctx, session) {
-  const services = session.data?.prices?.services ?? [];
+  const services = Object.values(SERVICES);
 
-  if (!services.length) {
-    return safeEditOrReply(
-      ctx,
-      "❌ Наразі послуги недоступні. Спробуйте пізніше."
-    );
-  }
-
-  const buttons = services
-    .filter((s) => s.active)
-    .map((s) => [Markup.button.callback(s.title, `SERVICE_${s.serviceId}`)]);
+  const buttons = services.map((s) => [
+    Markup.button.callback(s.title, `SERVICE_${s.id.toUpperCase()}`),
+  ]);
 
   buttons.push([Markup.button.callback("↩️ На початок", "START_OVER")]);
 

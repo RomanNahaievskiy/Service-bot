@@ -3,6 +3,9 @@ import { getSession } from "../../utils/helpers.js";
 import { getServiceByCallback } from "../../core/domain/services.js";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
+
+import { getPriceConfig } from "../../core/services/pricing.service.js";
+
 // Обробник вибору послуги
 export async function serviceHandler(ctx) {
   console.log("🔥 serviceHandler", ctx.callbackQuery.data);
@@ -24,6 +27,18 @@ export async function serviceHandler(ctx) {
   // 1️⃣ зберігаємо дані
   session.data.serviceId = service.id;
   session.data.service = service; // тимчасово, можна залишити тільки id
+
+  // ✅ підвантажуємо прайс з Google Sheets один раз (кеш уже є в pricing.service)
+  try {
+    session.data.prices = await getPriceConfig(); // { vehicles, options } (може +services, якщо колись додаси)
+  } catch (e) {
+    console.error("❌ prices_get failed:", e);
+    await ctx.answerCbQuery("❌ Не вдалося завантажити прайс", {
+      show_alert: true,
+    });
+    // можна або залишити на SERVICE, або показати повідомлення і STOP
+    return;
+  }
 
   // 2️⃣ змінюємо стан з допомогою transition
   goToStep(session, STEPS.VEHICLE_GROUP);
