@@ -1,27 +1,27 @@
 import { calcPricing } from "../../core/services/pricing.service.js";
 import { renderStep } from "../render/renderStep.js";
+import { STEPS } from "../../core/fsm/steps.js";
 import { goToStep } from "../../core/fsm/transition.js";
-import { STEPS } from "../../core/fsm/steps.js"; // або константи кроків
 
 export async function optionsDoneHandler(ctx) {
   console.log("✅ optionsDoneHandler triggered");
 
-  const session = ctx.session;
+  const session = ctx.session; // ✅ головне
   session.data = session.data ?? {};
-  session.data.order = session.data.order ?? {};
 
-  // у тебе може бути або session.data.vehicleId / group / optionIds,
-  // або session.data.order.vehicleId ... — нижче універсально:
-  const vehicleId = session.data.vehicleId ?? session.data.order.vehicleId;
-  const group = session.data.group ?? session.data.order.group;
-  const optionIds =
-    session.data.optionIds ?? session.data.order.optionIds ?? [];
+  // (не обов’язково, але корисно)
+  if (session.step !== STEPS.OPTIONS) {
+    return ctx.answerCbQuery();
+  }
+
+  const vehicleId = session.data.vehicleId;
+  const group = session.data.vehicleGroup; // якщо в тебе інша назва — нижче дам варіант
+  const optionIds = session.data.options ?? [];
 
   if (!vehicleId) {
     await ctx.answerCbQuery("⚠️ Спочатку оберіть тип транспорту", {
       show_alert: true,
     });
-    // повертаємо на потрібний крок
     goToStep(session, STEPS.VEHICLE_TYPE);
     return renderStep(ctx, session);
   }
@@ -29,28 +29,24 @@ export async function optionsDoneHandler(ctx) {
   try {
     const pricing = await calcPricing({ vehicleId, group, optionIds });
 
-    // зберігаємо розрахунок
-    session.data.pricing = pricing;
+    session.data.pricing = {
+      totalPrice: pricing.totalPrice,
+      totalDurationMin: pricing.totalDurationMin,
+      basePrice: pricing.basePrice,
+      baseDurationMin: pricing.baseDurationMin,
+      optionsPrice: pricing.optionsPrice,
+      optionsDurationMin: pricing.optionsDurationMin,
+      selectedOptions: pricing.selectedOptions,
+    };
 
-    // для зручності можна зберегти totals окремо
-    session.data.totalPrice = pricing.totalPrice;
-    session.data.totalDurationMin = pricing.totalDurationMin;
+    await ctx.answerCbQuery("✅ Готово");
 
-    await ctx.answerCbQuery("✅ Опції збережено");
-
-    // ⬇️ НАСТУПНИЙ КРОК — підстав свій:
-    // наприклад: вибір дати / часу / підтвердження
-    goToStep(session, STEPS.DATE); // <--- ЗМІНИ НА СВІЙ КРОК
-
+    // після опцій у тебе (судячи з флоу) — введення даних ТЗ
+    goToStep(session, STEPS.VEHICLE_DATA);
     return renderStep(ctx, session);
   } catch (e) {
     console.error("❌ calcPricing failed:", e);
-    await ctx.answerCbQuery("❌ Не вдалося порахувати вартість", {
-      show_alert: true,
-    });
-
-    // залишаємося на опціях, щоб не ламати флоу
-    goToStep(session, STEPS.OPTIONS);
+    await ctx.answerCbQuery("❌ Помилка розрахунку", { show_alert: true });
     return renderStep(ctx, session);
   }
 }
