@@ -1,4 +1,5 @@
 import { STEPS } from "../../core/fsm/steps.js";
+import { goToStep } from "../../core/fsm/transition.js";
 import { getSession } from "../../utils/helpers.js";
 import { renderStep } from "../render/renderStep.js";
 
@@ -27,9 +28,9 @@ export async function vehicleGroupHandler(ctx) {
 
   // логіка переходу
   if (group === "other") {
-    session.step = STEPS.OTHER_CONTACT;
+    goToStep(session, STEPS.OTHER_CONTACT);
   } else {
-    session.step = STEPS.VEHICLE_TYPE;
+    goToStep(session, STEPS.VEHICLE_TYPE);
   }
 
   await ctx.answerCbQuery();

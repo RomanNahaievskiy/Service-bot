@@ -29,7 +29,7 @@ export const SERVICES = {
   // },
   // Додайте інші послуги за потреби
 };
-
+// Функція для отримання послуги за callback даними
 export function getServiceByCallback(callbackData) {
   return Object.values(SERVICES).find(
     (service) => `SERVICE_${service.id.toUpperCase()}` === callbackData

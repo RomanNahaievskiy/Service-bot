@@ -1,29 +1,30 @@
-import { startHandler } from "./handlers/start.handler.js";
-import { serviceHandler } from "./handlers/service.handler.js";
+import { startHandler } from "./handlers/start.handler.js"; //+
+import { serviceHandler } from "./handlers/service.handler.js"; //+
 
-import { vehicleGroupHandler } from "./handlers/vehicleGroup.handler.js";
-import { vehicleTypeHandler } from "./handlers/vehicleType.handler.js";
+import { vehicleGroupHandler } from "./handlers/vehicleGroup.handler.js"; //+
+import { vehicleTypeHandler } from "./handlers/vehicleType.handler.js"; //+
 
-import { optionsToggleHandler } from "./handlers/optionsToggle.handler.js";
-import { optionsDoneHandler } from "./handlers/optionsDone.handler.js";
+import { optionsToggleHandler } from "./handlers/optionsToggle.handler.js"; // #
+import { optionsDoneHandler } from "./handlers/optionsDone.handler.js"; // #
 
-import { vehicleDataHandler } from "./handlers/vehicleData.handler.js";
-import { dateHandler } from "./handlers/date.handlers.js";
+import { vehicleDataHandler } from "./handlers/vehicleData.handler.js"; //+
+import { dateHandler } from "./handlers/date.handlers.js"; //+
 
-import { timeHandler } from "./handlers/time.handler.js";
-import { timeSelectHandler } from "./handlers/timeSelect.handler.js";
+import { timeHandler } from "./handlers/time.handler.js"; //+
+import { timeSelectHandler } from "./handlers/timeSelect.handler.js"; //+
 
-import { phoneHandler } from "./handlers/phone.handler.js";
-import { confirmHandler } from "./handlers/confirm.handler.js";
+import { phoneHandler } from "./handlers/phone.handler.js"; //+
+import { confirmHandler } from "./handlers/confirm.handler.js"; //+
 
-import { startOverHandler } from "./handlers/startOver.handler.js";
-import { backHandler } from "./handlers/back.handler.js";
+import { startOverHandler } from "./handlers/startOver.handler.js"; //+
+import { backHandler } from "./handlers/back.handler.js"; //+
 
 export function registerRoutes(bot) {
   console.log("🧭 Router registered");
 
   // START
   bot.start(startHandler);
+  bot.action("START_FLOW", startHandler); // 🔥 те саме
 
   // FORWARD FLOW
   bot.action(/^SERVICE_/, serviceHandler); // SERVICE_WASH, SERVICE_REPAIR...

@@ -1,6 +1,8 @@
 import { STEPS } from "../../core/fsm/steps.js";
+import { goToStep } from "../../core/fsm/transition.js";
 import { getSession, resetSession } from "../../utils/helpers.js";
-import { Markup } from "telegraf";
+import { setStep } from "../../core/fsm/transition.js";
+import { renderStep } from "../render/renderStep.js";
 
 export async function startOverHandler(ctx) {
   console.log("🔄 startOverHandler"); //test
@@ -10,17 +12,15 @@ export async function startOverHandler(ctx) {
   await ctx.answerCbQuery(); // Підтвердження обробки колбеку для телеграма
 
   const session = getSession(ctx.chat.id);
-  session.step = STEPS.SERVICE; // Встановлюємо крок на SERVICE
-  session.data ??= {}; //ініціалізуємо дані сесії, якщо вони не існують
+
+  // Встановлюємо крок на SERVICE
+  setStep(session, STEPS.SERVICE);
+
   session.data.fullName ??=
     ctx.from.first_name + (ctx.from.last_name ? " " + ctx.from.last_name : "");
 
-  await ctx.reply(
-    "🔄 Починаємо спочатку.\n\nОберіть послугу:",
-    Markup.inlineKeyboard([
-      [Markup.button.callback("🚿 Мийка", "SERVICE_WASH")],
-      [Markup.button.callback("✨ Детейлінг", "SERVICE_DETAILING")],
-      [Markup.button.callback("🔧 Ремонт", "SERVICE_REPAIR")],
-    ])
-  );
+  // безпечно відповісти на callback, якщо він є
+  if (ctx.callbackQuery) await ctx.answerCbQuery();
+
+  return renderStep(ctx, session);
 }

@@ -1,0 +1,46 @@
+import { Markup } from "telegraf";
+import { safeEditOrReply } from "./safeEditOrReply.js";
+import { formatDate } from "../../core/domain/dates.js";
+
+export async function renderConfirm(ctx, session) {
+  const err = session.data.confirmError;
+
+  const serviceTitle =
+    typeof session.data.service === "string"
+      ? session.data.service
+      : session.data.service?.title || "—";
+
+  const vehicleTitle =
+    typeof session.data.vehicle === "string"
+      ? session.data.vehicle
+      : session.data.vehicle?.title || "—";
+
+  const price = session.data?.pricing?.totalPrice;
+  const duration = session.data?.pricing?.totalDurationMin;
+
+  const extra =
+    price || duration
+      ? `\nВартість: ${price ?? "—"} грн\nТривалість: ${duration ?? "—"} хв\n`
+      : "";
+
+  const errBlock = err
+    ? `\n\n❌ Помилка: ${err}\nСпробуйте ще раз або поверніться назад.`
+    : "";
+
+  return safeEditOrReply(
+    ctx,
+    `✅ Перевірте дані запису:\n\n` +
+      `Послуга: ${serviceTitle}\n` +
+      `ТЗ: ${vehicleTitle}\n` +
+      `Номер: ${session.data.vehicleNumber || "—"}\n` +
+      `Дата: ${formatDate(session.data.date)}\n` +
+      `Час: ${session.data.time}\n` +
+      extra +
+      errBlock,
+    Markup.inlineKeyboard([
+      [Markup.button.callback("✅ Підтвердити", "CONFIRM")],
+      [Markup.button.callback("⬅️ Назад", "BACK")],
+      [Markup.button.callback("↩️ На початок", "START_OVER")],
+    ])
+  );
+}

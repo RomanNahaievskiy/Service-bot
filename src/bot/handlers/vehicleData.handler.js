@@ -1,6 +1,7 @@
 import { STEPS } from "../../core/fsm/steps.js";
+import { goToStep } from "../../core/fsm/transition.js";
 import { getSession } from "../../utils/helpers.js";
-import { Markup } from "telegraf";
+import { renderStep } from "../render/renderStep.js";
 
 export async function vehicleDataHandler(ctx) {
   const session = getSession(ctx.chat.id);
@@ -18,14 +19,9 @@ export async function vehicleDataHandler(ctx) {
   }
 
   session.data.vehicleNumber = vehicleNumber;
-  session.step = STEPS.DATE; // переходимо до кроку вибору дати
 
-  await ctx.reply(
-    `✅ Номер ТЗ збережено: ${vehicleNumber}\n\nОберіть дату запису:`,
-    Markup.inlineKeyboard([
-      [Markup.button.callback("📅 Сьогодні", "DATE_TODAY")],
-      [Markup.button.callback("📆 Завтра", "DATE_TOMORROW")],
-      [Markup.button.callback("⬅️ Назад", "BACK_TO_VEHICLE_TYPE")],
-    ])
-  );
+  // переходимо до кроку вибору дати
+  goToStep(session, STEPS.DATE);
+
+  return renderStep(ctx, session);
 }

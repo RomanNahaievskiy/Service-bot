@@ -1,6 +1,8 @@
 import { STEPS } from "../../core/fsm/steps.js";
 import { getSession } from "../../utils/helpers.js";
-import { Markup } from "telegraf";
+// import { Markup } from "telegraf";
+import { goToStep } from "../../core/fsm/transition.js";
+import { renderStep } from "../render/renderStep.js";
 
 export async function phoneHandler(ctx) {
   console.log("📱 phoneHandler"); // test debug
@@ -8,7 +10,7 @@ export async function phoneHandler(ctx) {
 
   if (session.step !== STEPS.PHONE) return;
 
-  const contact = ctx.message.contact;
+  const contact = ctx.message?.contact;
 
   if (!contact?.phone_number) {
     return ctx.reply(
@@ -26,12 +28,18 @@ export async function phoneHandler(ctx) {
     contact.last_name || ""
   }`.trim();
 
-  session.step = STEPS.CONFIRM;
-
   await ctx.reply(
     "✅ Дякую! Номер збережено.\n\nПереходимо до підтвердження запису 👇",
-    { reply_markup: { remove_keyboard: true } }
+    { reply_markup: { remove_keyboard: true } } // ховаємо клавіатуру
   );
+
+  // session.step = STEPS.CONFIRM;
+  goToStep(session, STEPS.CONFIRM);
+
+  return renderStep(ctx, session);
+  /* 
+
+ 
 
   // тут можна одразу викликати confirmHandler або показати summary
   await ctx.reply(
@@ -46,5 +54,5 @@ export async function phoneHandler(ctx) {
       [Markup.button.callback("✅ Підтвердити", "CONFIRM")], // Кнопка підтвердження
       [Markup.button.callback("⬅️ Назад", "BACK_TO_TIME")],
     ])
-  );
+  );*/
 }

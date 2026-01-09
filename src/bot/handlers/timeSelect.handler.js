@@ -1,5 +1,7 @@
 import { STEPS } from "../../core/fsm/steps.js";
+import { goToStep } from "../../core/fsm/transition.js";
 import { getSession } from "../../utils/helpers.js";
+import { renderStep } from "../render/renderStep.js";
 // import { Markup } from "telegraf";
 import { askPhoneHandler } from "./askPhone.handler.js";
 
@@ -8,16 +10,18 @@ export async function timeSelectHandler(ctx) {
   console.log("⏰ timeSelectHandler", ctx.callbackQuery.data); //test
 
   const session = getSession(ctx.chat.id);
-  const time = ctx.callbackQuery.data.replace("TIME_", "");
-
   if (session.step !== STEPS.TIME) {
     return ctx.answerCbQuery();
   }
 
+  const time = ctx.callbackQuery.data.replace("TIME_", "").trim();
   session.data.time = time;
-  session.step = STEPS.PHONE; // Переходимо до отримання номеру тел клієнта
+
+  // Переходимо до отримання номеру тел клієнта
+  goToStep(session, STEPS.PHONE);
 
   await ctx.answerCbQuery(); // Підтвердження обробки колбеку для телеграма
 
-  await askPhoneHandler(ctx); // Викликаємо обробник запиту номера телефону
+  return renderStep(ctx, session);
+  //await askPhoneHandler(ctx); // Викликаємо обробник запиту номера телефону
 }

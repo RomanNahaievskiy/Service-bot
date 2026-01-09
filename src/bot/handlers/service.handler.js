@@ -8,7 +8,7 @@ export async function serviceHandler(ctx) {
   console.log("🔥 serviceHandler", ctx.callbackQuery.data);
 
   const session = getSession(ctx.chat.id);
-  const callbackData = ctx.callbackQuery.data;
+  const callbackData = ctx.callbackQuery.data; // те що обрав користувач
 
   // FSM guard (опційно, але бажано)
   if (session.step !== STEPS.SERVICE) {

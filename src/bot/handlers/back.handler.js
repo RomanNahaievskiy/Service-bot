@@ -1,9 +1,15 @@
 import { renderStep } from "../render/renderStep.js";
+import { getSession } from "../../utils/helpers.js";
+import { restoreData } from "../../core/fsm/transition.js";
 
 export async function backHandler(ctx) {
   console.log("⬅️ BACK pressed");
+  // безпечно отримуємо chatId
+  const chatId = ctx.chat?.id ?? ctx.from?.id;
+  if (!chatId) return;
+  // отримуємо сесію користувача
+  const session = getSession(chatId);
 
-  const session = ctx.session ?? null;
   // якщо ти не прокидаєш session через ctx — беремо напряму
   // const session = getSession(ctx.chat.id);
 
@@ -14,9 +20,12 @@ export async function backHandler(ctx) {
   const prev = session.history.pop();
 
   session.step = prev.step;
-  session.data = prev.data;
+  // session.data = prev.data;
+  session.data = restoreData(prev.data);
 
-  await ctx.answerCbQuery();
+  //було : await ctx.answerCbQuery();
+  // стало :
+  if (ctx.callbackQuery) await ctx.answerCbQuery();
 
   return renderStep(ctx, session);
 }
