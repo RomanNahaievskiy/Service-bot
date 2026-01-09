@@ -1,6 +1,6 @@
 import { calcPricing } from "../../core/services/pricing.service.js"; // шлях під себе
 import { renderStep } from "../render/renderStep.js";
-import { goToStep } from "../fsm/transition.js"; // або як у тебе називається
+import { goToStep } from "../../core/fsm/transition.js";
 import { STEPS } from "../fsm/steps.js"; // або константи кроків
 
 export async function optionsDoneHandler(ctx) {
