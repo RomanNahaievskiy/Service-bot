@@ -8,6 +8,9 @@ export async function startHandler(ctx) {
   resetSession(ctx.chat.id);
   const session = getSession(ctx.chat.id);
 
+  console.log("START: client from sheets =", client); // test debug
+  console.log("START: session.data.phone =", session.data.phone); // test debug
+
   // ✅ Підтягуємо клієнта з Google Sheets (Clients)
   const tgUserId = ctx.from?.id;
   const client = await getClientByTgUserId(tgUserId);

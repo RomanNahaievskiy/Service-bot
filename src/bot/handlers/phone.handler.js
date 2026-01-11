@@ -14,7 +14,7 @@ export async function phoneHandler(ctx) {
     ctx.update?.callback_query?.message?.chat?.id;
 
   const session = getSession(chatId);
-
+  console.log("PHONE step: session.data.phone =", session.data.phone); // test debug
   if (session.step !== STEPS.PHONE) return;
 
   const contact = ctx.message?.contact;
