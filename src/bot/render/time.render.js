@@ -9,16 +9,18 @@ export async function renderTime(ctx, session) {
 
   // Якщо слоти не підвантажені — просимо натиснути кнопку (або просто показати "оновити")
   // (можна прибрати, якщо timeHandler викликається автоматично одразу після dateHandler)
-  if (!session.data.timeSlots && slots.length === 0) {
-    return safeEditOrReply(
-      ctx,
-      `⏰ Підбираю вільний час (тривалість: ${durationMin} хв)…`,
-      Markup.inlineKeyboard([
-        [Markup.button.callback("🔄 Показати слоти", "TIME_SELECT")],
-        [Markup.button.callback("⬅️ Назад", "BACK")],
-      ])
-    );
-  }
+  //========================================================================================================================================================
+
+  // if (!session.data.timeSlots && slots.length === 0) {
+  //   return safeEditOrReply(
+  //     ctx,
+  //     `⏰ Підбираю вільний час (: ${durationMin} хв)…`,
+  //     Markup.inlineKeyboard([
+  //       [Markup.button.callback("🔄 Показати слоти", "TIME_SELECT")],
+  //       [Markup.button.callback("⬅️ Назад", "BACK")],
+  //     ])
+  //   );
+  // }
 
   // Немає слотів
   if (slots.length === 0) {
