@@ -16,6 +16,9 @@ import { timeSelectHandler } from "./handlers/timeSelect.handler.js"; //+
 import { phoneHandler } from "./handlers/phone.handler.js"; //+
 import { confirmHandler } from "./handlers/confirm.handler.js"; //+
 
+import { useSavedPhoneHandler } from "./handlers/useSavedPhone.handler.js";
+import { changePhoneHandler } from "./handlers/changePhone.handler.js";
+
 import { startOverHandler } from "./handlers/startOver.handler.js"; //+
 import { backHandler } from "./handlers/back.handler.js"; //+
 
@@ -43,6 +46,9 @@ export function registerRoutes(bot) {
   bot.action(/^TIME_/, timeSelectHandler); // TIME_19:00
 
   bot.on("contact", phoneHandler); // phone контакт (guard по STEPS.PHONE)
+
+  bot.action("USE_SAVED_PHONE", useSavedPhoneHandler);
+  bot.action("CHANGE_PHONE", changePhoneHandler);
 
   bot.action("CONFIRM", confirmHandler); // confirm booking
 

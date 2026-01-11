@@ -65,4 +65,12 @@ export const sheetsApi = {
     callSheets("list", { dateISO, status }),
   // get prices via GET
   pricesGet: () => callSheetsGet("prices_get"),
+  //========================================================================================================================================================
+  // ===== Clients =====
+  // Отримати клієнта за Telegram user id
+  clientGet: ({ tgUserId }) =>
+    callSheetsGet("client_get", { tgUserId: String(tgUserId) }),
+
+  // Upsert клієнта (створити або оновити)
+  clientUpsert: (payload) => callSheets("client_upsert", payload),
 };

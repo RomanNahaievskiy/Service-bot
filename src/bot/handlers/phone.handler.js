@@ -3,6 +3,7 @@ import { getSession } from "../../utils/helpers.js";
 // import { Markup } from "telegraf";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
+import { upsertClient } from "../../core/domain/clients.js";
 
 export async function phoneHandler(ctx) {
   console.log("📱 phoneHandler"); // test debug
@@ -33,6 +34,15 @@ export async function phoneHandler(ctx) {
   session.data.fullName = `${contact.first_name || ""} ${
     contact.last_name || ""
   }`.trim();
+
+  // ✅ Зберігаємо/оновлюємо клієнта у Google Sheets (Clients)
+  await upsertClient({
+    tgUserId: String(ctx.from?.id || ""),
+    chatId: String(chatId),
+    phone: session.data.phone,
+    fullName: session.data.fullName,
+    username: ctx.from?.username || "",
+  });
 
   await ctx.reply(
     "✅ Дякую! Номер збережено.",
