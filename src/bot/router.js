@@ -10,6 +10,9 @@ import { optionsDoneHandler } from "./handlers/optionsDone.handler.js"; // # д�
 import { vehicleDataHandler } from "./handlers/vehicleData.handler.js"; //+
 import { datePickHandler } from "./handlers/date.handlers.js"; //+
 
+import { timePagePrevHandler } from "./handlers/timePagePrev.handler.js";
+import { timePageNextHandler } from "./handlers/timePageNext.handler.js";
+
 import { timeHandler } from "./handlers/time.handler.js"; //+
 import { timeSelectHandler } from "./handlers/timeSelect.handler.js"; //+
 
@@ -43,6 +46,11 @@ export function registerRoutes(bot) {
   bot.action(/^DATE_\d{4}-\d{2}-\d{2}$/, datePickHandler); // DATE_2026-01-11
 
   bot.action("TIME_SELECT", timeHandler); // show slots
+
+  bot.action("TIME_PAGE_PREV", timePagePrevHandler);
+  bot.action("TIME_PAGE_NEXT", timePageNextHandler);
+  bot.action("TIME_PAGE_INFO", (ctx) => ctx.answerCbQuery()); // просто заглушка
+
   bot.action(/^TIME_/, timeSelectHandler); // TIME_19:00
 
   bot.on("contact", phoneHandler); // phone контакт (guard по STEPS.PHONE)

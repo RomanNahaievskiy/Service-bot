@@ -134,11 +134,13 @@ export async function datePickHandler(ctx) {
     });
 
     session.data.timeSlots = slots;
-    session.data.timeSlotsPage = 0;
+    session.data.timePage = 0;
+
     session.data.timeSlotsError = null;
   } catch (e) {
     console.error("❌ getFreeDaySlots failed", e);
     session.data.timeSlots = [];
+    session.data.timePage = 0; // ✅ теж скидаємо
     session.data.timeSlotsError = String(e?.message || e);
   }
 
