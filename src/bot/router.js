@@ -7,7 +7,6 @@ import { vehicleTypeHandler } from "./handlers/vehicleType.handler.js"; //+
 import { optionsToggleHandler } from "./handlers/optionsToggle.handler.js"; // #
 import { optionsDoneHandler } from "./handlers/optionsDone.handler.js"; // # десь загубив
 
-import { vehicleDataHandler } from "./handlers/vehicleData.handler.js"; //+
 import { datePickHandler } from "./handlers/date.handlers.js"; //+
 
 import { timePagePrevHandler } from "./handlers/timePagePrev.handler.js";
@@ -17,8 +16,7 @@ import { timeHandler } from "./handlers/time.handler.js"; //+
 import { timeSelectHandler } from "./handlers/timeSelect.handler.js"; //+
 
 import { phoneHandler } from "./handlers/phone.handler.js"; //+
-import { phoneTextHandler } from "./handlers/phoneText.handler.js";
-
+import { textDispatcher } from "./handlers/textDispatcher.handler.js"; //  для обробки текстових повдомлень
 import { confirmHandler } from "./handlers/confirm.handler.js"; //+
 
 import { useSavedPhoneHandler } from "./handlers/useSavedPhone.handler.js";
@@ -42,24 +40,23 @@ export function registerRoutes(bot) {
   bot.action(/^OPT_TOGGLE_/, optionsToggleHandler); // OPT_TOGGLE_engine_small
   bot.action("OPT_DONE", optionsDoneHandler); // finish options
 
-  bot.on("text", vehicleDataHandler); // vehicle number/description (guard по STEPS.VEHICLE_DATA)
-
   // bot.action(/^DATE_/, dateHandler); // DATE_TODAY / DATE_TOMORROW
   bot.action(/^DATE_\d{4}-\d{2}-\d{2}$/, datePickHandler); // DATE_2026-01-11
 
   bot.action("TIME_SELECT", timeHandler); // show slots
 
-  bot.action("TIME_PAGE_PREV", timePagePrevHandler);
-  bot.action("TIME_PAGE_NEXT", timePageNextHandler);
-  bot.action("TIME_PAGE_INFO", (ctx) => ctx.answerCbQuery()); // просто заглушка
+  bot.action("TPPREV", timePagePrevHandler);
+  bot.action("TPNEXT", timePageNextHandler);
+  bot.action("TPINFO", (ctx) => ctx.answerCbQuery()); // просто заглушка
 
   bot.action(/^TIME_/, timeSelectHandler); // TIME_19:00
 
   bot.on("contact", phoneHandler); // phone контакт (guard по STEPS.PHONE)
 
+  bot.on("text", textDispatcher); // vehicle number/description (guard по STEPS.VEHICLE_DATA)
+
   bot.action("USE_SAVED_PHONE", useSavedPhoneHandler);
   bot.action("CHANGE_PHONE", changePhoneHandler);
-  bot.on("text", phoneTextHandler);
 
   bot.action("CONFIRM", confirmHandler); // confirm booking
 

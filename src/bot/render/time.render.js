@@ -95,16 +95,12 @@ export async function renderTime(ctx, session) {
 
   // ✅ Навігація сторінок
   const navRow = [];
-  if (currentPage > 0)
-    navRow.push(Markup.button.callback("◀️", "TIME_PAGE_PREV"));
+  if (currentPage > 0) navRow.push(Markup.button.callback("◀️", "TPPREV"));
   navRow.push(
-    Markup.button.callback(
-      `📄 ${currentPage + 1}/${totalPages}`,
-      "TIME_PAGE_INFO"
-    )
+    Markup.button.callback(`📄 ${currentPage + 1}/${totalPages}`, "TPINFO")
   );
   if (currentPage < totalPages - 1)
-    navRow.push(Markup.button.callback("▶️", "TIME_PAGE_NEXT"));
+    navRow.push(Markup.button.callback("▶️", "TPNEXT"));
   keyboard.push(navRow);
 
   keyboard.push([Markup.button.callback("⬅️ Назад", "BACK")]);

@@ -19,7 +19,7 @@ function normalizePhone(text) {
 }
 
 export async function phoneTextHandler(ctx) {
-  console.log("phoneTextHandler");
+  console.log("📱 phoneTextHandler"); // test debug
   const chatId =
     ctx.chat?.id ??
     ctx.callbackQuery?.message?.chat?.id ??
@@ -39,7 +39,7 @@ export async function phoneTextHandler(ctx) {
   }
 
   session.data.phone = phone;
-
+  console.log("PHONE step: session.data.phone =", session.data.phone); // test debug
   // прибираємо reply keyboard (контакт)
   await ctx.reply("✅ Номер прийнято.", Markup.removeKeyboard());
 

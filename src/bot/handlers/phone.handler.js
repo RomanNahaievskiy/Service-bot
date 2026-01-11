@@ -1,6 +1,5 @@
 import { STEPS } from "../../core/fsm/steps.js";
 import { getSession } from "../../utils/helpers.js";
-// import { Markup } from "telegraf";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
 import { upsertClient } from "../../core/domain/clients.js";
@@ -14,7 +13,7 @@ export async function phoneHandler(ctx) {
     ctx.update?.callback_query?.message?.chat?.id;
 
   const session = getSession(chatId);
-  console.log("PHONE step: session.data.phone =", session.data.phone); // test debug
+
   if (session.step !== STEPS.PHONE) return;
 
   const contact = ctx.message?.contact;
@@ -34,7 +33,7 @@ export async function phoneHandler(ctx) {
   session.data.fullName = `${contact.first_name || ""} ${
     contact.last_name || ""
   }`.trim();
-
+  console.log("PHONE step: session.data.phone =", session.data.phone); // test debug
   // ✅ Зберігаємо/оновлюємо клієнта у Google Sheets (Clients)
   await upsertClient({
     tgUserId: String(ctx.from?.id || ""),
@@ -49,26 +48,7 @@ export async function phoneHandler(ctx) {
     { reply_markup: { remove_keyboard: true } } // ховаємо клавіатуру
   );
 
-  // session.step = STEPS.CONFIRM;
   goToStep(session, STEPS.CONFIRM);
 
   return renderStep(ctx, session);
-  /* 
-
- 
-
-  // тут можна одразу викликати confirmHandler або показати summary
-  await ctx.reply(
-    // Показуємо підсумок запису
-    `✅ Запис:\n  
-Послуга: ${session.data.service.title}
-ТЗ: ${session.data.vehicle.title}
-Номер: ${session.data.vehicleNumber}
-Дата: ${session.data.date.toLocaleDateString("uk-UA")}
-Час: ${session.data.time}`,
-    Markup.inlineKeyboard([
-      [Markup.button.callback("✅ Підтвердити", "CONFIRM")], // Кнопка підтвердження
-      [Markup.button.callback("⬅️ Назад", "BACK_TO_TIME")],
-    ])
-  );*/
 }
