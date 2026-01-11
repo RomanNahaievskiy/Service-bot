@@ -9,8 +9,6 @@ export async function startOverHandler(ctx) {
 
   resetSession(ctx.chat.id); // Скидаємо сесію користувача
 
-  await ctx.answerCbQuery(); // Підтвердження обробки колбеку для телеграма
-
   const chatId =
     ctx.chat?.id ??
     ctx.callbackQuery?.message?.chat?.id ??
@@ -27,8 +25,6 @@ export async function startOverHandler(ctx) {
   // безпечно відповісти на callback, якщо він є
   if (ctx.callbackQuery) await ctx.answerCbQuery(); // це і перезаписує ?
 
-  // ✅ ключ: створюємо нове повідомлення, яке далі будемо редагувати
-  await ctx.reply("🆕 Новий запис. Оберіть послугу:"); // а це висить повідомленням нижче
   return renderStep(ctx, session);
 }
 
