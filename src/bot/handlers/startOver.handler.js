@@ -44,7 +44,7 @@ export async function startOverHandler(ctx) {
     ctx.callbackQuery?.message?.chat?.id ??
     ctx.update?.callback_query?.message?.chat?.id;
 
-  resetSession(chatId);
+  resetSession(chatId); //???
 
   const session = getSession(chatId);
   setStep(session, STEPS.SERVICE);

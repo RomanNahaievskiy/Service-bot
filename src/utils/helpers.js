@@ -14,11 +14,18 @@ export function getSession(chatId) {
 }
 
 export function resetSession(chatId) {
-  // Скидання сесії користувача до початкового валідного стану
+  const prev = sessions.get(chatId);
+  // Скидання сесії користувача, збереження деяких даних
+  const keep = {
+    client: prev?.data?.client ?? null,
+    phone: prev?.data?.phone ?? "",
+    fullName: prev?.data?.fullName ?? "",
+  };
+
   sessions.set(chatId, {
     step: STEPS.START,
-    data: {},
-    history: [], // Історія кроків користувача
+    data: keep,
+    history: [],
   });
 }
 
