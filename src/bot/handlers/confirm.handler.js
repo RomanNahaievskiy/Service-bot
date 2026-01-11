@@ -7,7 +7,13 @@ import { renderStep } from "../render/renderStep.js";
 export async function confirmHandler(ctx) {
   console.log("✅ confirmHandler");
 
-  const session = getSession(ctx.chat.id);
+  // const session = getSession(ctx.chat.id);
+  const chatId =
+    ctx.chat?.id ??
+    ctx.callbackQuery?.message?.chat?.id ??
+    ctx.update?.callback_query?.message?.chat?.id;
+
+  const session = getSession(chatId);
 
   if (session.step !== STEPS.CONFIRM) {
     return ctx.answerCbQuery();

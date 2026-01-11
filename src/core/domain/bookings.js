@@ -19,9 +19,19 @@ export async function createBooking(data) {
   }
 
   // ✅ тривалість з послуги
-  const duration = Number(data.service?.duration ?? 30);
+  // const duration = Number(data.service?.duration ?? 30);
+  const duration = Number(
+    data?.pricing?.totalDurationMin ??
+      data?.service?.durationMin ??
+      data?.service?.duration ??
+      30
+  );
+
+  const safeDuration =
+    Number.isFinite(duration) && duration > 0 ? duration : 30;
+
   const end = new Date(start);
-  end.setMinutes(end.getMinutes() + duration);
+  end.setMinutes(end.getMinutes() + safeDuration);
 
   return await sheetsApi.createBooking({
     tgId: String(data.chatId),
