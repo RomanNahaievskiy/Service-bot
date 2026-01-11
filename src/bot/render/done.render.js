@@ -76,12 +76,22 @@ export async function renderDone(ctx, session) {
     `\n\n🧾 ID: ${bookingId}\n\n` +
     `📍 Чекаємо на вас у зазначений час.`;
 
-  return ctx.reply(text, {
-    reply_markup: {
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback("➕ Новий запис", "START_OVER")],
-      ]).reply_markup,
-      remove_keyboard: true,
-    },
-  });
+  // return ctx.reply(text, {
+  //   reply_markup: {
+  //     ...Markup.inlineKeyboard([
+  //       [Markup.button.callback("➕ Новий запис", "START_OVER")],
+  //     ]).reply_markup,
+  //     remove_keyboard: true,
+  //   },
+  // });
+
+  await ctx.reply(
+    text,
+    Markup.inlineKeyboard([
+      [Markup.button.callback("➕ Новий запис", "START_OVER")],
+    ])
+  );
+
+  // прибрати стару reply-клавіатуру (контакт)
+  return ctx.reply(" ", Markup.removeKeyboard());
 }
