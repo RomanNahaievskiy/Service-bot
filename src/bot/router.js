@@ -8,7 +8,7 @@ import { optionsToggleHandler } from "./handlers/optionsToggle.handler.js"; // #
 import { optionsDoneHandler } from "./handlers/optionsDone.handler.js"; // # десь загубив
 
 import { vehicleDataHandler } from "./handlers/vehicleData.handler.js"; //+
-import { dateHandler } from "./handlers/date.handlers.js"; //+
+import { datePickHandler } from "./handlers/date.handlers.js"; //+
 
 import { timeHandler } from "./handlers/time.handler.js"; //+
 import { timeSelectHandler } from "./handlers/timeSelect.handler.js"; //+
@@ -36,7 +36,8 @@ export function registerRoutes(bot) {
 
   bot.on("text", vehicleDataHandler); // vehicle number/description (guard по STEPS.VEHICLE_DATA)
 
-  bot.action(/^DATE_/, dateHandler); // DATE_TODAY / DATE_TOMORROW
+  // bot.action(/^DATE_/, dateHandler); // DATE_TODAY / DATE_TOMORROW
+  bot.action(/^DATE_\d{4}-\d{2}-\d{2}$/, datePickHandler); // DATE_2026-01-11
 
   bot.action("TIME_SELECT", timeHandler); // show slots
   bot.action(/^TIME_/, timeSelectHandler); // TIME_19:00
