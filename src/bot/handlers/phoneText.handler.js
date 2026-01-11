@@ -39,6 +39,20 @@ export async function phoneTextHandler(ctx) {
   }
 
   session.data.phone = phone;
+  session.data.fullName = `${
+    contact.first_name || ctx.from?.first_name || ""
+  } ${contact.last_name || ctx.from?.last_name || ""}`.trim();
+
+  console.log("PHONE step: session.data.phone =", session.data.phone); // test debug
+  // ✅ Зберігаємо/оновлюємо клієнта у Google Sheets (Clients)
+  await upsertClient({
+    tgUserId: String(ctx.from?.id || ""),
+    chatId: String(chatId),
+    phone: session.data.phone,
+    fullName: session.data.fullName,
+    username: ctx.from?.username || "",
+  });
+
   console.log("PHONE step: session.data.phone =", session.data.phone); // test debug
   // прибираємо reply keyboard (контакт)
   await ctx.reply("✅ Номер прийнято.", Markup.removeKeyboard());
