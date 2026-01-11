@@ -34,11 +34,8 @@ export async function phoneHandler(ctx) {
     contact.last_name || ""
   }`.trim();
 
-  // await ctx.reply(
-  //   "✅ Дякую! Номер збережено.\n\nПереходимо до підтвердження запису 👇",
-  //   { reply_markup: { remove_keyboard: true } } // ховаємо клавіатуру
-  // );
   await ctx.reply(
+    "✅ Дякую! Номер збережено.",
     { reply_markup: { remove_keyboard: true } } // ховаємо клавіатуру
   );
 
