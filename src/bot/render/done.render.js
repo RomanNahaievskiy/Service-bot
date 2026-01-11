@@ -93,5 +93,5 @@ export async function renderDone(ctx, session) {
   );
 
   // прибрати стару reply-клавіатуру (контакт)
-  return ctx.reply(" ", Markup.removeKeyboard());
+  return ctx.reply("...", Markup.removeKeyboard());
 }
