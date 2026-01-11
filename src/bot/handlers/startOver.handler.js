@@ -1,5 +1,4 @@
 import { STEPS } from "../../core/fsm/steps.js";
-import { goToStep } from "../../core/fsm/transition.js";
 import { getSession, resetSession } from "../../utils/helpers.js";
 import { setStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
@@ -22,5 +21,9 @@ export async function startOverHandler(ctx) {
   // безпечно відповісти на callback, якщо він є
   if (ctx.callbackQuery) await ctx.answerCbQuery();
 
+  // ✅ ключ: створюємо нове повідомлення, яке далі будемо редагувати
+  await ctx.reply("🆕 Новий запис. Оберіть послугу:");
   return renderStep(ctx, session);
 }
+
+//========================================================================================================================================================

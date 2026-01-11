@@ -40,25 +40,48 @@ export async function renderDone(ctx, session) {
       : "";
 
   // Прибираємо reply-клавіатуру (після контакту), але inline залишаємо
-  return safeEditOrReply(
-    ctx,
+  // return safeEditOrReply(
+  //   ctx,
+  //   `🎉 Запис створено!\n\n` +
+  //     `Послуга: ${serviceTitle}\n` +
+  //     `Транспорт: ${vehicleTitle}\n` +
+  //     `Номер/опис: ${session.data.vehicleNumber || "—"}\n` +
+  //     `Дата: ${formatDate(session.data.date)}\n` +
+  //     `Час: ${session.data.time}\n` +
+  //     extra +
+  //     contact +
+  //     `\n\n🧾 ID: ${bookingId}\n\n` +
+  //     `📍 Чекаємо на вас у зазначений час.`,
+  //   {
+  //     reply_markup: {
+  //       ...Markup.inlineKeyboard([
+  //         [Markup.button.callback("➕ Новий запис", "START_OVER")],
+  //       ]).reply_markup,
+  //       remove_keyboard: true, // ✅ прибирає кнопки "поділитися контактом"
+  //     },
+  //   }
+  // );
+
+  //========================================================================================================================================================
+  // Новий варіант без safeEditOrReply — просто нове повідомлення
+  const text =
     `🎉 Запис створено!\n\n` +
-      `Послуга: ${serviceTitle}\n` +
-      `Транспорт: ${vehicleTitle}\n` +
-      `Номер/опис: ${session.data.vehicleNumber || "—"}\n` +
-      `Дата: ${formatDate(session.data.date)}\n` +
-      `Час: ${session.data.time}\n` +
-      extra +
-      contact +
-      `\n\n🧾 ID: ${bookingId}\n\n` +
-      `📍 Чекаємо на вас у зазначений час.`,
-    {
-      reply_markup: {
-        ...Markup.inlineKeyboard([
-          [Markup.button.callback("➕ Новий запис", "START_OVER")],
-        ]).reply_markup,
-        remove_keyboard: true, // ✅ прибирає кнопки "поділитися контактом"
-      },
-    }
-  );
+    `Послуга: ${serviceTitle}\n` +
+    `Транспорт: ${vehicleTitle}\n` +
+    `Номер/опис: ${session.data.vehicleNumber || "—"}\n` +
+    `Дата: ${formatDate(session.data.date)}\n` +
+    `Час: ${session.data.time}\n` +
+    extra +
+    contact +
+    `\n\n🧾 ID: ${bookingId}\n\n` +
+    `📍 Чекаємо на вас у зазначений час.`;
+
+  return ctx.reply(text, {
+    reply_markup: {
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback("➕ Новий запис", "START_OVER")],
+      ]).reply_markup,
+      remove_keyboard: true,
+    },
+  });
 }
