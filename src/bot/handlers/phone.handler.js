@@ -6,7 +6,13 @@ import { renderStep } from "../render/renderStep.js";
 
 export async function phoneHandler(ctx) {
   console.log("📱 phoneHandler"); // test debug
-  const session = getSession(ctx.chat.id);
+
+  const chatId =
+    ctx.chat?.id ??
+    ctx.callbackQuery?.message?.chat?.id ??
+    ctx.update?.callback_query?.message?.chat?.id;
+
+  const session = getSession(chatId);
 
   if (session.step !== STEPS.PHONE) return;
 
