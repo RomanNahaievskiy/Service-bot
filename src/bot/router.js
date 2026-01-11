@@ -17,6 +17,8 @@ import { timeHandler } from "./handlers/time.handler.js"; //+
 import { timeSelectHandler } from "./handlers/timeSelect.handler.js"; //+
 
 import { phoneHandler } from "./handlers/phone.handler.js"; //+
+import { phoneTextHandler } from "./handlers/phoneText.handler.js";
+
 import { confirmHandler } from "./handlers/confirm.handler.js"; //+
 
 import { useSavedPhoneHandler } from "./handlers/useSavedPhone.handler.js";
@@ -57,6 +59,7 @@ export function registerRoutes(bot) {
 
   bot.action("USE_SAVED_PHONE", useSavedPhoneHandler);
   bot.action("CHANGE_PHONE", changePhoneHandler);
+  bot.on("text", phoneTextHandler);
 
   bot.action("CONFIRM", confirmHandler); // confirm booking
 
