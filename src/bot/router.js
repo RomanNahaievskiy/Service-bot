@@ -64,4 +64,5 @@ export function registerRoutes(bot) {
   bot.action("BACK", backHandler); // ✅ універсальний назад
   bot.action("START_OVER", startOverHandler); // reset
   //
+  bot.hears("Записатися на мийку", serviceHandler); // клавіатура новий запис
 }
