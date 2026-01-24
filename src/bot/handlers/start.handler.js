@@ -20,7 +20,7 @@ export async function startHandler(ctx) {
 
   console.log("START: client from sheets =", client); // test debug
   console.log("START: session.data.phone =", session.data.phone); // test debug
-  setStep(session, STEPS.SERVICE);
+  setStep(session, STEPS.HOME);
   session.history = [];
 
   return renderStep(ctx, session);

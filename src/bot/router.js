@@ -44,7 +44,7 @@ export function registerRoutes(bot) {
   bot.action(/^DATE_\d{4}-\d{2}-\d{2}$/, datePickHandler); // DATE_2026-01-11
 
   bot.action("TIME_SELECT", timeHandler); // show slots
-
+  // pagination
   bot.action("TPPREV", timePagePrevHandler);
   bot.action("TPNEXT", timePageNextHandler);
   bot.action("TPINFO", (ctx) => ctx.answerCbQuery()); // просто заглушка
@@ -63,4 +63,5 @@ export function registerRoutes(bot) {
   // NAV
   bot.action("BACK", backHandler); // ✅ універсальний назад
   bot.action("START_OVER", startOverHandler); // reset
+  //
 }

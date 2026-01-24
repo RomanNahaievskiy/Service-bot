@@ -11,11 +11,15 @@ import { renderTime } from "./time.render.js"; //+ old
 import { renderPhone } from "./phone.render.js"; //+ old
 import { renderConfirm } from "./confirm.render.js"; //+ jld
 import { renderDone } from "./done.render.js"; //+
+import { renderHome } from "./home.render.js"; //+
 
 export async function renderStep(ctx, session) {
   switch (session.step) {
     case STEPS.START:
       return renderStart(ctx, session);
+
+    case STEPS.HOME:
+      return renderHome(ctx, session); //+
 
     case STEPS.SERVICE:
       return renderService(ctx, session);

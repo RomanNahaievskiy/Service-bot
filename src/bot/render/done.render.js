@@ -11,7 +11,7 @@ export async function renderDone(ctx, session) {
   // якщо ти вже перейшов на prices_get:
   const vehicleTitle =
     session.data?.prices?.vehicles?.find(
-      (v) => v.vehicleId === session.data?.vehicleId
+      (v) => v.vehicleId === session.data?.vehicleId,
     )?.vehicleTitle ||
     (typeof session.data.vehicle === "string"
       ? session.data.vehicle
@@ -85,12 +85,16 @@ export async function renderDone(ctx, session) {
   //   },
   // });
 
-  await ctx.reply(
-    text,
-    Markup.inlineKeyboard([
-      [Markup.button.callback("➕ Новий запис", "START_OVER")],
-    ])
-  );
+  // await ctx.reply(
+  //   text,
+  //   Markup.inlineKeyboard([
+  //     [Markup.button.callback("➕ Новий запис", "START_OVER")],
+  //   ])
+  // );
+
+  Markup.keyboard([["🆕 Новий запис"]])
+    .resize()
+    .oneTime(); // опційно: сховає після натискання (не завжди ідеально працює на всіх клієнтах)
 
   // прибрати стару reply-клавіатуру (контакт)
   return ctx.reply("... додамо тут геолокацію ", Markup.removeKeyboard());

@@ -1,5 +1,6 @@
 export const STEPS = {
   START: "START",
+  HOME: "HOME", // не використовується поки що
   SERVICE: "SERVICE",
   VEHICLE_GROUP: "VEHICLE_GROUP",
   VEHICLE_TYPE: "VEHICLE_TYPE",
