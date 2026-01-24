@@ -3,7 +3,7 @@ import { STEPS } from "../../core/fsm/steps.js";
 import { vehicleDataHandler } from "./vehicleData.handler.js";
 import { phoneTextHandler } from "./phoneText.handler.js";
 
-export async function textDispatcher(ctx) {
+export async function textDispatcher(ctx, next) {
   const chatId = ctx.chat?.id;
   const session = getSession(chatId);
 
@@ -15,7 +15,7 @@ export async function textDispatcher(ctx) {
       return phoneTextHandler(ctx);
 
     default:
-      // ігноруємо будь-який інший текст (щоб не ламав FSM)
-      return;
+      // ✅ НЕ ігноруємо “назавжди”, а віддаємо іншим слухачам (hears)
+      return next();
   }
 }
