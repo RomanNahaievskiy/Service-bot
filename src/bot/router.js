@@ -1,6 +1,8 @@
 import { startHandler } from "./handlers/start.handler.js"; //+
 import { serviceHandler } from "./handlers/service.handler.js"; //+
 
+import { contractVehicleSelectHandler } from "./handlers/contractVehicleSelect.handler.js"; //!!
+
 import { vehicleGroupHandler } from "./handlers/vehicleGroup.handler.js"; //+
 import { vehicleTypeHandler } from "./handlers/vehicleType.handler.js"; //+
 
