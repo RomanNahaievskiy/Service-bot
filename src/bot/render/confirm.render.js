@@ -4,7 +4,7 @@ import { formatDate } from "../../core/domain/dates.js";
 
 export async function renderConfirm(ctx, session) {
   const err = session.data.confirmError;
-
+  console.log(session.data.serviceTitle);
   const serviceTitle =
     typeof session.data.serviceTitle === "string"
       ? session.data.serviceTitle
@@ -35,7 +35,7 @@ export async function renderConfirm(ctx, session) {
     `✅ Перевірте дані запису:\n\n` +
       `Послуга: ${serviceTitle}\n` +
       `ТЗ: ${vehicleTitle}\n` +
-      `Номер: ${session.data.vehicleNumber || "—"}\n` +
+      `Реєстраційний номер: ${session.data.vehicleNumber || "—"}\n` +
       `Дата: ${formatDate(session.data.date)}\n` +
       `Час: ${session.data.time}\n` +
       extra +
