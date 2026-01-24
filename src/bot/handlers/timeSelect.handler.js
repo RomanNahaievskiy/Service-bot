@@ -3,8 +3,8 @@ import { goToStep } from "../../core/fsm/transition.js";
 import { getSession } from "../../utils/helpers.js";
 import { renderStep } from "../render/renderStep.js";
 // import { Markup } from "telegraf";
-import { askPhoneHandler } from "./askPhone.handler.js";
-
+// import { askPhoneHandler } from "./askPhone.handler.js";
+/*Зберігає в сесію обраний час з слотів*/
 export async function timeSelectHandler(ctx) {
   // Новий обробник для підтвердження вибору часу
   console.log("⏰ timeSelectHandler", ctx.callbackQuery.data); //test

@@ -68,7 +68,7 @@ export async function renderDone(ctx, session) {
     `🎉 Запис створено!\n\n` +
     `Послуга: ${serviceTitle}\n` +
     `Транспорт: ${vehicleTitle}\n` +
-    `Номер/опис: ${session.data.vehicleNumber || "—"}\n` +
+    `Реєстраційний номер: ${session.data.vehicleNumber || "—"}\n` +
     `Дата: ${formatDate(session.data.date)}\n` +
     `Час: ${session.data.time}\n` +
     extra +
@@ -93,5 +93,5 @@ export async function renderDone(ctx, session) {
   );
 
   // прибрати стару reply-клавіатуру (контакт)
-  return ctx.reply("...", Markup.removeKeyboard());
+  return ctx.reply("... додамо тут геолокацію ", Markup.removeKeyboard());
 }

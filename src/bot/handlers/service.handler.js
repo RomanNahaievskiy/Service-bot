@@ -26,7 +26,8 @@ export async function serviceHandler(ctx) {
 
   // 1️⃣ зберігаємо дані
   session.data.serviceId = service.id;
-  session.data.service = service; // тимчасово, можна залишити тільки id
+  session.data.serviceTitle = service.title;
+  // session.data.service = service; // тимчасово, можна залишити тільки id
 
   // ✅ підвантажуємо прайс з Google Sheets один раз (кеш уже є в pricing.service)
   try {

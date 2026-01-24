@@ -10,10 +10,18 @@ export async function renderConfirm(ctx, session) {
       ? session.data.service
       : session.data.service?.title || "—";
 
+  // const vehicleTitle =
+  //   typeof session.data.vehicle === "string"
+  //     ? session.data.vehicle
+  //     : session.data.vehicle?.title || "—";
+
   const vehicleTitle =
-    typeof session.data.vehicle === "string"
+    session.data?.prices?.vehicles?.find(
+      (v) => v.vehicleId === session.data?.vehicleId
+    )?.vehicleTitle ||
+    (typeof session.data.vehicle === "string"
       ? session.data.vehicle
-      : session.data.vehicle?.title || "—";
+      : session.data.vehicle?.title || "—");
 
   const price = session.data?.pricing?.totalPrice;
   const duration = session.data?.pricing?.totalDurationMin;

@@ -8,7 +8,7 @@ export async function vehicleTypeHandler(ctx) {
   const session = getSession(ctx.chat.id);
 
   if (session.step !== STEPS.VEHICLE_TYPE) return ctx.answerCbQuery();
-
+  //
   session.data.vehicleId = ctx.callbackQuery.data.replace("VEH_", "");
 
   goToStep(session, STEPS.OPTIONS);
