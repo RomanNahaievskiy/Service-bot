@@ -10,7 +10,7 @@ export async function renderOptions(ctx, session) {
     return safeEditOrReply(
       ctx,
       "❌ Неможливо показати додаткові послуги. Дані відсутні.",
-      Markup.inlineKeyboard([[Markup.button.callback("⬅️ Назад", "BACK")]])
+      Markup.inlineKeyboard([[Markup.button.callback("⬅️ Назад", "BACK")]]),
     );
   }
 
@@ -35,9 +35,9 @@ export async function renderOptions(ctx, session) {
       ctx,
       "ℹ️ Для цього транспорту немає додаткових послуг.",
       Markup.inlineKeyboard([
-        [Markup.button.callback("➡️ Продовжити", "OPT_DONE")],
         [Markup.button.callback("⬅️ Назад", "BACK")],
-      ])
+        [Markup.button.callback("➡️ Продовжити", "OPT_DONE")],
+      ]),
     );
   }
 
@@ -48,7 +48,7 @@ export async function renderOptions(ctx, session) {
     return [
       Markup.button.callback(
         `${mark} ${o.optionTitle} (+${o.price} грн / ${o.durationMin} хв)`,
-        `OPT_TOGGLE_${o.optionId}`
+        `OPT_TOGGLE_${o.optionId}`,
       ),
     ];
   });
@@ -56,8 +56,8 @@ export async function renderOptions(ctx, session) {
   const summary = calculateSummary(session);
 
   buttons.push([
-    Markup.button.callback("➡️ Продовжити", "OPT_DONE"),
     Markup.button.callback("⬅️ Назад", "BACK"),
+    Markup.button.callback("➡️ Продовжити", "OPT_DONE"),
   ]);
 
   return safeEditOrReply(
@@ -65,7 +65,7 @@ export async function renderOptions(ctx, session) {
     `➕ Додаткові послуги\n\n` +
       `💰 Поточна вартість: ${summary.totalPrice} грн\n` +
       `⏱ Тривалість: ${summary.totalDurationMin} хв`,
-    Markup.inlineKeyboard(buttons)
+    Markup.inlineKeyboard(buttons),
   );
 }
 
