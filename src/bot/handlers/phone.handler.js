@@ -20,7 +20,7 @@ export async function phoneHandler(ctx) {
 
   if (!contact?.phone_number) {
     return ctx.reply(
-      "❗ Не бачу номера. Натисніть кнопку «📱 Надіслати номер»."
+      "❗ Не бачу номера. Натисніть кнопку «📱 Надіслати номер».",
     );
   }
 
@@ -29,7 +29,7 @@ export async function phoneHandler(ctx) {
     return ctx.reply("❗ Будь ласка, надішліть *свій* номер телефону.");
   }
 
-  session.data.phone = contact.phone_number;
+  session.data.phone = `${contact.phone_number}`; // збереження як рядок
   session.data.fullName = `${contact.first_name || ""} ${
     contact.last_name || ""
   }`.trim();
@@ -45,7 +45,7 @@ export async function phoneHandler(ctx) {
 
   await ctx.reply(
     "✅ Дякую! Номер збережено.",
-    { reply_markup: { remove_keyboard: true } } // ховаємо клавіатуру
+    { reply_markup: { remove_keyboard: true } }, // ховаємо клавіатуру
   );
 
   goToStep(session, STEPS.CONFIRM);
