@@ -1,7 +1,8 @@
 export const STEPS = {
   START: "START",
-  HOME: "HOME", // не використовується поки що
+  HOME: "HOME",
   SERVICE: "SERVICE",
+  CONTRACT_NO: "CONTRACT_NO", // новий крок для номеру договору
   VEHICLE_GROUP: "VEHICLE_GROUP",
   VEHICLE_TYPE: "VEHICLE_TYPE",
   OPTIONS: "OPTIONS",

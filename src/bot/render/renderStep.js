@@ -24,6 +24,9 @@ export async function renderStep(ctx, session) {
     case STEPS.SERVICE:
       return renderService(ctx, session);
 
+    case STEPS.CONTRACT_NO:
+      return renderContractNo(ctx, session); //
+
     case STEPS.VEHICLE_GROUP:
       return renderVehicleGroup(ctx, session);
 
