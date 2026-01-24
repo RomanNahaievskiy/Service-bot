@@ -94,5 +94,5 @@ export async function renderDone(ctx, session) {
   );
 
   // прибрати стару reply-клавіатуру (контакт)
-  return ctx.reply("... додамо тут геолокацію ", Markup.removeKeyboard());
+  return ctx.reply("... додамо тут геолокацію ");
 }
