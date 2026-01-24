@@ -6,18 +6,13 @@ export async function renderConfirm(ctx, session) {
   const err = session.data.confirmError;
 
   const serviceTitle =
-    typeof session.data.service === "string"
-      ? session.data.service
-      : session.data.service?.title || "—";
-
-  // const vehicleTitle =
-  //   typeof session.data.vehicle === "string"
-  //     ? session.data.vehicle
-  //     : session.data.vehicle?.title || "—";
+    typeof session.data.serviceTitle === "string"
+      ? session.data.serviceTitle
+      : session.data.serviceTitle || "—";
 
   const vehicleTitle =
     session.data?.prices?.vehicles?.find(
-      (v) => v.vehicleId === session.data?.vehicleId
+      (v) => v.vehicleId === session.data?.vehicleId,
     )?.vehicleTitle ||
     (typeof session.data.vehicle === "string"
       ? session.data.vehicle
@@ -49,6 +44,6 @@ export async function renderConfirm(ctx, session) {
       [Markup.button.callback("✅ Підтвердити", "CONFIRM")],
       [Markup.button.callback("⬅️ Назад", "BACK")],
       [Markup.button.callback("↩️ На початок", "START_OVER")],
-    ])
+    ]),
   );
 }
