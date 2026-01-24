@@ -2,7 +2,7 @@ import { STEPS } from "../../core/fsm/steps.js";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
 
-export async function ContractNoHandler(ctx) {
+export async function contractNoHandler(ctx) {
   console.log("<СontractNo handler>"); // test debug
   const chatId = ctx.chat?.id;
   const session = getSession(chatId);
