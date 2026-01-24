@@ -90,7 +90,7 @@ export async function renderDone(ctx, session) {
     // Markup.inlineKeyboard([
     //   [Markup.button.callback("➕ Новий запис", "START_OVER")],
     // ])
-    Markup.keyboard([["🆕 Новий запис"]]).resize(),
+    Markup.keyboard([["Записатися на мийку"]]).resize(),
   );
 
   // прибрати стару reply-клавіатуру (контакт)
