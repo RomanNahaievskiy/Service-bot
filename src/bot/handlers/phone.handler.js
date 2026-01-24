@@ -29,7 +29,7 @@ export async function phoneHandler(ctx) {
     return ctx.reply("❗ Будь ласка, надішліть *свій* номер телефону.");
   }
 
-  session.data.phone = `${contact.phone_number}`; // збереження як рядок
+  session.data.phone = `+${contact.phone_number}`; // збереження як рядок
   session.data.fullName = `${contact.first_name || ""} ${
     contact.last_name || ""
   }`.trim();
