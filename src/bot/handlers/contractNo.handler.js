@@ -6,7 +6,10 @@ import { sheetsApi } from "../../core/api/sheetsApi.js";
 
 export async function contractNoHandler(ctx) {
   console.log("<СontractNo handler>"); // test debug
-  const chatId = ctx.chat.id;
+  const chatId =
+    ctx.chat?.id ??
+    ctx.callbackQuery?.message?.chat?.id ??
+    ctx.update?.callback_query?.message?.chat?.id;
   const session = getSession(chatId);
   if (session.step !== STEPS.CONTRACT_NO) return;
 
