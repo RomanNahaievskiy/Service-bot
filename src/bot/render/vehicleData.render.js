@@ -27,7 +27,9 @@ export async function renderVehicleData(ctx, session) {
         ? `${v.vehicleNumber} — ${v.alias}`
         : v.vehicleNumber;
       // callback data краще по vehicleId (стабільніше), а не по номеру
-      return [Markup.button.callback(label, `CV_${v.vehicleId}`)];
+      //return [Markup.button.callback(label, `CV_${v.vehicleId}`)];
+      const code = encodeURIComponent(v.vehicleNumber); // безпечно
+      return [Markup.button.callback(label, `CVN_${code}`)];
     });
 
     // навігація
