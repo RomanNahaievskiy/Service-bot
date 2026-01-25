@@ -1,6 +1,6 @@
-import { getSession } from "../../utils/sessionManager.js";
-import { STEPS } from "../../config/states.js";
-import { goToStep } from "../../utils/sessionSteps.js";
+import { STEPS } from "../../core/fsm/steps.js";
+import { getSession } from "../../utils/helpers.js";
+import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
 
 export async function contractVehicleSelectHandler(ctx) {
