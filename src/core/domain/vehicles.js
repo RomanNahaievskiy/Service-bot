@@ -1,3 +1,5 @@
+// не використовується
+
 export const VEHICLES = [
   {
     id: "BUS",

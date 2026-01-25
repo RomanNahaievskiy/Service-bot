@@ -73,4 +73,9 @@ export const sheetsApi = {
 
   // Upsert клієнта (створити або оновити)
   clientUpsert: (payload) => callSheets("client_upsert", payload),
+
+  // ===== Contract =====
+  // Отримати список транспортних засобів за номером договору
+  contractVehiclesGet: ({ contractNo }) =>
+    callSheetsGet("contract_vehicles_get", { contractNo: String(contractNo) }),
 };
