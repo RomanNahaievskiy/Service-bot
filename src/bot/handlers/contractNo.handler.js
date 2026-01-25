@@ -2,7 +2,7 @@ import { STEPS } from "../../core/fsm/steps.js";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
 import { getSession } from "../../utils/helpers.js";
-import { sheetsApi } from "../../core/api/sheetsApi.js";
+import { sheetsApi } from "../../integrations/sheetsApi.js";
 
 export async function contractNoHandler(ctx) {
   console.log("<СontractNo handler>"); // test debug
