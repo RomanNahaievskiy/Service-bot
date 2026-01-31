@@ -26,6 +26,7 @@ export async function contractVehicleSelectHandler(ctx) {
   session.data.vehicleTitle = v.alias || v.vehicleNumber;
 
   await ctx.answerCbQuery("✅ Обрано");
-  goToStep(session, STEPS.DATE);
+  //goToStep(session, STEPS.DATE); // тут треба перейти до вибору опцій
+  goToStep(session, STEPS.OPTIONS); // які можливі проблеми
   return renderStep(ctx, session);
 }

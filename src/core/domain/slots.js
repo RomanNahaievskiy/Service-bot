@@ -5,7 +5,7 @@ import { sheetsApi } from "../../integrations/sheetsApi.js";
 export function generateDaySlots({
   // генерує всі слоти дня
   serviceDuration,
-  slotStep = BUSINESS_CONFIG.SLOT_STEP_MINUTES,
+  slotStep = BUSINESS_CONFIG.SLOT_STEP_MINUTES, // 15 хвилин
   forDate = new Date(),
   now = new Date(),
   leadTimeMinutes = 0,
@@ -92,7 +92,7 @@ export async function getFreeDaySlots({
 
   // 1) тягнемо бронювання за дату
   const bookingsRaw = await sheetsApi.listBookings({ dateISO });
-
+  console.log("DBG booking sample", bookingsRaw?.[0]); // debug
   const bookings = (bookingsRaw || []).filter((b) => {
     const st = String(b.status || "").toLowerCase();
     return st === "new" || st === "approved";
@@ -119,11 +119,11 @@ export async function getFreeDaySlots({
     "first",
     allSlots[0],
     "last",
-    allSlots.at(-1)
+    allSlots.at(-1),
   );
   console.log(
     "DBG bookingsRaw",
-    Array.isArray(bookingsRaw) ? bookingsRaw.length : bookingsRaw
+    Array.isArray(bookingsRaw) ? bookingsRaw.length : bookingsRaw,
   );
   console.log("DBG busy", busy.length, busy.slice(0, 3));
 
