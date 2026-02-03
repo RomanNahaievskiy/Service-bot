@@ -4,6 +4,7 @@ import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
 
 export async function contractVehicleSelectHandler(ctx) {
+  console.log("🚗 contractVehicleSelectHandler");
   const chatId = ctx.callbackQuery?.message?.chat?.id;
   const session = getSession(chatId);
 
@@ -26,7 +27,7 @@ export async function contractVehicleSelectHandler(ctx) {
   session.data.vehicleTitle = v.alias || v.vehicleNumber;
 
   await ctx.answerCbQuery("✅ Обрано");
-  //goToStep(session, STEPS.DATE); // тут треба перейти до вибору опцій
-  goToStep(session, STEPS.OPTIONS); // які можливі проблеми
+  goToStep(session, STEPS.DATE); // тут треба перейти до вибору опцій
+  //goToStep(session, STEPS.OPTIONS); // які можливі проблеми
   return renderStep(ctx, session);
 }
