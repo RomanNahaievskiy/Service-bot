@@ -14,12 +14,15 @@ function reminderText(type, b) {
 
 export function startRemindersWorker(bot) {
   setInterval(async () => {
+    console.log("🔔 reminders tick", new Date().toISOString());
+
     let due = [];
     try {
       due = await sheetsApi.remindersDue({
         nowISO: new Date().toISOString(),
         limit: 30,
       });
+      console.log("🔔 due reminders:", due?.length);
     } catch (e) {
       console.warn("⚠️ remindersDue failed:", e?.message || e);
       return;
