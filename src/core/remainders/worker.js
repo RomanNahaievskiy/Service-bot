@@ -1,9 +1,9 @@
 import { sheetsApi } from "../../integrations/sheetsApi.js";
 
 function reminderText(type, b) {
-  const time = b.startsAt;
-  const svc = b.serviceTitle ? `\nПослуга: ${b.serviceTitle}` : "";
-  const car = b.vehicleNumber ? `\nАвто: ${b.vehicleNumber}` : "";
+  const time = b.startsAt; // можна покращити форматуванням дати/часу, але для прикладу так зійде
+  const svc = b.serviceTitle ? `\nПослуга: ${b.serviceTitle}` : ""; // не має ( має бути) синтаксична помилка.
+  const car = b.vehicleNumber ? `\nАвто: ${b.vehicleNumber}` : ""; // ... і тут теж
 
   if (type === "T24H")
     return `⏰ Нагадування: завтра мийка о ${time}.${svc}${car}`;
@@ -54,7 +54,27 @@ export function startRemindersWorker(bot) {
           });
           continue;
         }
+        // перевірка на простроченість нагадування
+        const now = Date.now();
+        const runTs = new Date(r.runAt).getTime();
 
+        const ttlByType = {
+          T15M: 20 * 60 * 1000,
+          T2H: 60 * 60 * 1000,
+          T24H: 6 * 60 * 60 * 1000,
+        };
+
+        const ttl = ttlByType[r.type] ?? 60 * 60 * 1000;
+
+        if (now - runTs > ttl) {
+          await sheetsApi.remindersMark({
+            reminderId: r.reminderId,
+            status: "CANCELED",
+            lastError: "expired",
+          });
+          continue;
+        }
+        // відправка нагадування
         const text = reminderText(r.type, booking);
         await bot.telegram.sendMessage(Number(r.tgId), text);
 
