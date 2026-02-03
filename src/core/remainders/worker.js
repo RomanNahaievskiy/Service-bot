@@ -14,7 +14,7 @@ function reminderText(type, b) {
 
 export function startRemindersWorker(bot) {
   setInterval(async () => {
-    console.log("🔔 reminders tick", new Date().toISOString());
+    // console.log("🔔 reminders tick", new Date().toISOString());
 
     let due = [];
     try {
@@ -22,7 +22,7 @@ export function startRemindersWorker(bot) {
         nowISO: new Date().toISOString(),
         limit: 30,
       });
-      console.log("🔔 due reminders:", due?.length);
+      // console.log("🔔 due reminders:", due?.length);
     } catch (e) {
       console.warn("⚠️ remindersDue failed:", e?.message || e);
       return;
