@@ -24,7 +24,7 @@ export async function createBooking(data) {
     data?.pricing?.totalDurationMin ??
       data?.service?.durationMin ??
       data?.service?.duration ??
-      30
+      30,
   );
 
   const safeDuration =
@@ -37,7 +37,7 @@ export async function createBooking(data) {
     tgId: String(data.chatId),
     fullName: data.fullName || "—",
     phone: data.phone || "",
-    service: normalize(data.service),
+    service: normalize(data.service), //servise.serviseId? || service.title || service.name || ""
     startsAt: toKyivISO(start), // у форматі ISO з часовою зоною Києва замість start.toISOString()
     endsAt: toKyivISO(end), // у форматі ISO з часовою зоною Києва замість end.toISOString()
     vehicle: `${normalize(data.vehicle)} ${data.vehicleNumber || ""}`.trim(),

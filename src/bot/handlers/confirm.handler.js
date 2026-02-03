@@ -59,6 +59,8 @@ import { getSession } from "../../utils/helpers.js";
 import { createBooking } from "../../core/domain/bookings.js";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
+import { sheetsApi } from "../../integrations/sheetsApi.js";
+import { buildRemindersForBooking } from "../../core/reminders/buildReminders.js";
 
 export async function confirmHandler(ctx) {
   console.log("✅ confirmHandler");
@@ -74,7 +76,7 @@ export async function confirmHandler(ctx) {
 
   const vehicleTitle =
     session.data?.prices?.vehicles?.find(
-      (v) => v.vehicleId === session.data?.vehicleId
+      (v) => v.vehicleId === session.data?.vehicleId,
     )?.vehicleTitle ||
     (typeof session.data.vehicle === "string"
       ? session.data.vehicle
@@ -97,9 +99,20 @@ export async function confirmHandler(ctx) {
       pricing: session.data.pricing,
     });
 
+    // ✅ Запланувати нагадування
+    try {
+      console.log("⏰ scheduling reminders for booking", booking.id);
+      const rows = buildRemindersForBooking(booking);
+      if (rows.length) {
+        await sheetsApi.remindersAppend(rows);
+      }
+    } catch (e) {
+      // нагадування не повинні ламати бронювання
+      console.warn("⚠️ remindersAppend failed:", e?.message || e);
+    }
+
     session.data.booking = booking;
     session.data.confirmError = null;
-
     // ✅ 1) Прибираємо (редагуємо) екран CONFIRM, щоб він не висів
     // Це працює тільки для callback, де є message_id
     if (ctx.callbackQuery?.message) {

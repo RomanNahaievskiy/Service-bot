@@ -78,4 +78,20 @@ export const sheetsApi = {
   // Отримати список транспортних засобів за номером договору
   contractVehiclesGet: ({ contractNo }) =>
     callSheetsGet("contract_vehicles_get", { contractNo: String(contractNo) }),
+
+  // ===== Reminders =====
+  remindersAppend: (rows) => callSheets("reminders_append", { rows }),
+  remindersDue: ({ nowISO, limit = 30 } = {}) =>
+    callSheets("reminders_due", { nowISO, limit }),
+  remindersLock: ({ reminderId }) =>
+    callSheets("reminders_lock", { reminderId }),
+  remindersMark: ({ reminderId, status, lastError, attemptsInc = false }) =>
+    callSheets("reminders_mark", {
+      reminderId,
+      status,
+      lastError,
+      attemptsInc,
+    }),
+  remindersCancelByBooking: ({ bookingId }) =>
+    callSheets("reminders_cancel_by_booking", { bookingId }),
 };
