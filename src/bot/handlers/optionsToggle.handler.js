@@ -14,16 +14,16 @@ export async function optionsToggleHandler(ctx) {
 
   const optionId = ctx.callbackQuery.data.replace("OPT_TOGGLE_", "");
 
-  session.data.optionsIds ??= [];
+  session.data.optionIds ??= [];
 
-  const idx = session.data.optionsIds.indexOf(optionId);
+  const idx = session.data.optionIds.indexOf(optionId);
 
   if (idx >= 0) {
     // ❌ вимикаємо
-    session.data.optionsIds.splice(idx, 1);
+    session.data.optionIds.splice(idx, 1);
   } else {
     // ✅ вмикаємо
-    session.data.optionsIds.push(optionId);
+    session.data.optionIds.push(optionId);
   }
 
   await ctx.answerCbQuery();
