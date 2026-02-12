@@ -14,7 +14,7 @@ export async function renderOptions(ctx, session) {
     );
   }
 
-  const selected = session.data.options ?? []; // масив optionId
+  const selected = session.data.optionIds ?? []; // масив optionId
 
   const options = prices.options.filter((o) => {
     if (!o.active) return false;
@@ -31,6 +31,7 @@ export async function renderOptions(ctx, session) {
   });
 
   if (!options.length) {
+    calculateSummary(session); // щоб мати актуальні дані для confirm
     return safeEditOrReply(
       ctx,
       "ℹ️ Для цього транспорту немає додаткових послуг.",
@@ -74,7 +75,7 @@ export async function renderOptions(ctx, session) {
 function calculateSummary(session) {
   const prices = session.data.prices;
   const vehicleId = session.data.vehicleId;
-  const selected = session.data.options ?? [];
+  const selected = session.data.optionIds ?? [];
 
   const vehicle = prices.vehicles.find((v) => v.vehicleId === vehicleId);
 

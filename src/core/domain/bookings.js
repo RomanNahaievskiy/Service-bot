@@ -33,6 +33,8 @@ export async function createBooking(data) {
   const end = new Date(start);
   end.setMinutes(end.getMinutes() + safeDuration);
 
+  const now = new Date().toISOString();
+
   const optionIdsArr = Array.isArray(data.optionIds)
     ? data.optionIds
     : String(data.optionIds || "")
