@@ -19,13 +19,8 @@ export async function confirmHandler(ctx) {
 
   if (session.step !== STEPS.CONFIRM) return ctx.answerCbQuery();
 
-  const vehicleTitle =
-    session.data?.prices?.vehicles?.find(
-      (v) => v.vehicleId === session.data?.vehicleId,
-    )?.vehicleTitle ||
-    (typeof session.data.vehicle === "string"
-      ? session.data.vehicle
-      : session.data.vehicle?.title || "—");
+  session.data.tgId ??= String(ctx.from?.id || "");
+  session.data.chatId ??= String(chatId);
 
   try {
     const booking = await createBooking(session.data);
