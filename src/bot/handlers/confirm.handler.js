@@ -60,7 +60,7 @@ import { createBooking } from "../../core/domain/bookings.js";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
 import { sheetsApi } from "../../integrations/sheetsApi.js";
-import { buildRemindersForBooking } from "../../core/remainders/buildReminders.js";
+import { buildRemindersForBooking } from "../../core/reminders/buildReminders.js";
 
 export async function confirmHandler(ctx) {
   console.log("✅ confirmHandler");

@@ -2,7 +2,7 @@
 import { Telegraf } from "telegraf"; // Import Telegraf library for Telegram bot functionality
 import { ENV } from "../config/env.js";
 import { registerRoutes } from "./router.js";
-import { startRemindersWorker } from "../core/remainders/worker.js";
+import { startRemindersWorker } from "../core/reminders/worker.js";
 
 export const bot = new Telegraf(ENV.BOT_TOKEN);
 

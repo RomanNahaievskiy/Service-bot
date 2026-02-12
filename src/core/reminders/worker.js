@@ -16,6 +16,10 @@ export function startRemindersWorker(bot) {
   setInterval(async () => {
     // console.log("🔔 reminders tick", new Date().toISOString());
 
+    // ✅ anti-overlap між інстансами
+    const tick = await sheetsApi.remindersTickLock({}).catch(() => null);
+    if (!tick?.locked) return;
+
     let due = [];
     try {
       due = await sheetsApi.remindersDue({

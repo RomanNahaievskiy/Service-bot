@@ -77,7 +77,7 @@ export async function getFreeDaySlots({
   slotStep = BUSINESS_CONFIG.SLOT_STEP_MINUTES,
   now = new Date(),
   leadTimeMinutes = 0,
-  status = "new", // можна "new|approved" як захочеш
+  // status = "new", // можна "new|approved" як захочеш
 }) {
   const allSlots = generateDaySlots({
     forDate,
@@ -92,7 +92,7 @@ export async function getFreeDaySlots({
 
   // 1) тягнемо бронювання за дату
   const bookingsRaw = await sheetsApi.listBookings({ dateISO });
-  console.log("DBG booking sample", bookingsRaw?.[0]); // debug
+  // console.log("DBG booking sample", bookingsRaw?.[0]); // debug
   const bookings = (bookingsRaw || []).filter((b) => {
     const st = String(b.status || "").toLowerCase();
     return st === "new" || st === "approved";
@@ -112,20 +112,20 @@ export async function getFreeDaySlots({
     })
     .filter(Boolean);
 
-  console.log("DBG dateISO", dateISO, "serviceDuration", serviceDuration);
-  console.log(
-    "DBG allSlots",
-    allSlots.length,
-    "first",
-    allSlots[0],
-    "last",
-    allSlots.at(-1),
-  );
-  console.log(
-    "DBG bookingsRaw",
-    Array.isArray(bookingsRaw) ? bookingsRaw.length : bookingsRaw,
-  );
-  console.log("DBG busy", busy.length, busy.slice(0, 3));
+  // console.log("DBG dateISO", dateISO, "serviceDuration", serviceDuration);
+  // console.log(
+  //   "DBG allSlots",
+  //   allSlots.length,
+  //   "first",
+  //   allSlots[0],
+  //   "last",
+  //   allSlots.at(-1),
+  // );
+  // console.log(
+  //   "DBG bookingsRaw",
+  //   Array.isArray(bookingsRaw) ? bookingsRaw.length : bookingsRaw,
+  // );
+  // console.log("DBG busy", busy.length, busy.slice(0, 3));
 
   // 3) фільтруємо слоти, що перетинаються
   return allSlots.filter((slot) => {

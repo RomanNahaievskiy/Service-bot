@@ -94,4 +94,5 @@ export const sheetsApi = {
     }),
   remindersCancelByBooking: ({ bookingId }) =>
     callSheets("reminders_cancel_by_booking", { bookingId }),
+  remindersTickLock: () => callSheets("reminders_tick_lock", {}),
 };
