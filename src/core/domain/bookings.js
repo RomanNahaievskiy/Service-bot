@@ -33,16 +33,70 @@ export async function createBooking(data) {
   const end = new Date(start);
   end.setMinutes(end.getMinutes() + safeDuration);
 
-  return await sheetsApi.createBooking({
-    tgId: String(data.chatId),
-    fullName: data.fullName || "—",
-    phone: data.phone || "",
-    service: normalize(data.service), //servise.serviseId? || service.title || service.name || ""
-    startsAt: toKyivISO(start), // у форматі ISO з часовою зоною Києва замість start.toISOString()
-    endsAt: toKyivISO(end), // у форматі ISO з часовою зоною Києва замість end.toISOString()
-    vehicle: `${normalize(data.vehicle)} ${data.vehicleNumber || ""}`.trim(),
-    comment: "",
-  });
+  const optionIdsArr = Array.isArray(data.optionIds)
+    ? data.optionIds
+    : String(data.optionIds || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+  const totalPrice = Number(data?.pricing?.totalPrice ?? data?.totalPrice ?? 0);
+
+  // Формуємо корисне навантаження для Sheets API відповідно до контракту(схеми) в Sheets API
+  const payload = {
+    id: String(data.id || crypto.randomUUID()),
+    createdAt: String(data.createdAt || now),
+
+    // клієнт
+    tgId: String(data.tgId || data.userId || ""), // ✅ tgId користувача
+    fullName: String(data.fullName || "—"),
+    phone: String(data.phone || ""),
+
+    // B2B
+    clientType: String(data.clientType || "retail"),
+    contractNo: String(
+      data.clientType === "contract" ? data.contractNo || "" : "",
+    ),
+
+    // послуга/ТЗ
+    serviceId: String(
+      data.serviceId || data?.service?.serviceId || data?.service?.id || "",
+    ),
+    serviceTitle: String(
+      data.serviceTitle || data?.service?.title || data?.service?.name || "—",
+    ),
+
+    vehicleId: String(
+      data.vehicleId || data?.vehicle?.vehicleId || data?.vehicle?.id || "",
+    ),
+    vehicleTitle: String(
+      data.vehicleTitle ||
+        data?.prices?.vehicles?.find((v) => v.vehicleId === data?.vehicleId)
+          ?.vehicleTitle ||
+        data?.vehicle?.title ||
+        data?.vehicle?.name ||
+        (typeof data.vehicle === "string" ? data.vehicle : "") ||
+        "—",
+    ),
+    vehicleNumber: String(data.vehicleNumber || ""),
+
+    // дати
+    startsAt: toKyivISO(start),
+    endsAt: toKyivISO(end),
+
+    // опції/прайс
+    optionIds: optionIdsArr.join(","),
+    totalPrice: Number.isFinite(totalPrice) ? totalPrice : 0,
+    totalDurationMin: safeDuration,
+
+    // службове
+    comment: String(data.comment || ""),
+    status: String(data.status || "new"),
+    admin: String(data.admin || ""),
+    updatedAt: String(now),
+  };
+
+  return await sheetsApi.createBooking(payload);
 }
 
 function extractTimeHHMM(time) {

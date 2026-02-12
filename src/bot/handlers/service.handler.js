@@ -46,6 +46,7 @@ export async function serviceHandler(ctx) {
     goToStep(session, STEPS.CONTRACT_NO);
   } else {
     session.data.clientType = "retail";
+    session.data.contractNo = ""; // явно вказуємо порожній рядок, щоб не було undefined
     goToStep(session, STEPS.VEHICLE_GROUP);
   }
 

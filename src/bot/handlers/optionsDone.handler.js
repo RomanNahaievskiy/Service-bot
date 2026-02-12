@@ -22,7 +22,7 @@ export async function optionsDoneHandler(ctx) {
   if (!session) {
     console.error(
       "❌ optionsDoneHandler: session not found for chatId",
-      chatId
+      chatId,
     );
     return ctx.answerCbQuery("⚠️ Сесія не знайдена. Натисніть /start", {
       show_alert: true,
@@ -38,10 +38,13 @@ export async function optionsDoneHandler(ctx) {
 
   const vehicleId = session.data.vehicleId;
   const group =
-    session.data.vehicleGroup ??
-    session.data.group ??
-    session.data.vehicle_group; // універсально
-  const optionIds = session.data.options ?? [];
+    session.data.vehicleGroup ||
+    session.data?.prices?.vehicles?.find((v) => v.vehicleId === vehicleId)
+      ?.group ||
+    "passenger";
+  session.data.vehicleGroup = group; // щоб далі було стабільно
+
+  const optionIds = session.data.optionsIds ?? [];
 
   if (!vehicleId) {
     await ctx.answerCbQuery("⚠️ Спочатку оберіть тип транспорту", {
@@ -67,7 +70,12 @@ export async function optionsDoneHandler(ctx) {
 
     await ctx.answerCbQuery("✅ Готово");
 
-    goToStep(session, STEPS.VEHICLE_DATA); // наступний крок у твоєму флоу
+    if (session.data.clientType === "contract") {
+      goToStep(session, STEPS.DATE);
+    } else {
+      goToStep(session, STEPS.VEHICLE_DATA);
+    }
+
     return renderStep(ctx, session);
   } catch (e) {
     console.error("❌ calcPricing failed:", e);

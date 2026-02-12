@@ -9,7 +9,15 @@ export async function vehicleTypeHandler(ctx) {
 
   if (session.step !== STEPS.VEHICLE_TYPE) return ctx.answerCbQuery();
   //
-  session.data.vehicleId = ctx.callbackQuery.data.replace("VEH_", "");
+
+  const vehicleId = ctx.callbackQuery.data.replace("VEH_", "");
+  session.data.vehicleId = vehicleId;
+
+  session.data.vehicleTitle =
+    session.data?.prices?.vehicles?.find((v) => v.vehicleId === vehicleId)
+      ?.vehicleTitle ||
+    session.data.vehicleTitle ||
+    "—";
 
   goToStep(session, STEPS.OPTIONS);
 

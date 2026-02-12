@@ -3,6 +3,7 @@ import { STEPS } from "../../core/fsm/steps.js";
 import { getSession } from "../../utils/helpers.js";
 import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
+import { upsertClient } from "../../core/domain/clients.js";
 
 function normalizePhone(text) {
   const s = String(text || "").trim();
@@ -34,14 +35,13 @@ export async function phoneTextHandler(ctx) {
       "📱 Введіть номер у форматі +380XXXXXXXXX або натисніть кнопку «📱 Надіслати номер».",
       Markup.keyboard([Markup.button.contactRequest("📱 Надіслати номер")])
         .resize()
-        .oneTime()
+        .oneTime(),
     );
   }
 
   session.data.phone = phone;
-  session.data.fullName = `${
-    contact.first_name || ctx.from?.first_name || ""
-  } ${contact.last_name || ctx.from?.last_name || ""}`.trim();
+  session.data.fullName =
+    `${ctx.from?.first_name || ""} ${ctx.from?.last_name || ""}`.trim();
 
   console.log("PHONE step: session.data.phone =", session.data.phone); // test debug
   // ✅ Зберігаємо/оновлюємо клієнта у Google Sheets (Clients)

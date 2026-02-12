@@ -21,6 +21,13 @@ export async function contractVehicleSelectHandler(ctx) {
     });
     return;
   }
+  // vehicleGroup — або з v, або з prices
+  session.data.vehicleGroup =
+    v.vehicleGroup ||
+    session.data?.prices?.vehicles?.find((x) => x.vehicleId === v.vehicleId)
+      ?.group ||
+    session.data.vehicleGroup ||
+    "passenger";
 
   session.data.vehicleNumber = v.vehicleNumber;
   session.data.vehicleId = v.vehicleId;
