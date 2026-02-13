@@ -6,7 +6,12 @@ import { renderStep } from "../render/renderStep.js";
 export async function vehicleGroupHandler(ctx) {
   console.log("🚗 vehicleGroupHandler", ctx.callbackQuery.data); // test
 
-  const session = getSession(ctx.chat.id);
+  const chatId =
+    ctx.chat?.id ??
+    ctx.callbackQuery?.message?.chat?.id ??
+    ctx.update?.callback_query?.message?.chat?.id;
+
+  const session = getSession(chatId);
   const callbackData = ctx.callbackQuery.data;
 
   // FSM guard

@@ -79,6 +79,16 @@ export const sheetsApi = {
   contractVehiclesGet: ({ contractNo }) =>
     callSheetsGet("contract_vehicles_get", { contractNo: String(contractNo) }),
 
+  // pricing для договору (base + options + totals)
+  contractPricingGet: ({ contractNo, vehicleId, serviceId, optionIds }) =>
+    callSheetsGet("contract_pricing_get", {
+      contractNo: String(contractNo),
+      vehicleId: String(vehicleId),
+      serviceId: String(serviceId || "wash"),
+      optionIds: Array.isArray(optionIds)
+        ? optionIds.join(",")
+        : String(optionIds || ""),
+    }),
   // ===== Reminders =====
   remindersAppend: (rows) => callSheets("reminders_append", { rows }),
   remindersDue: ({ nowISO, limit = 30 } = {}) =>

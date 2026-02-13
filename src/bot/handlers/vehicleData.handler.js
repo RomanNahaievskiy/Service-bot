@@ -4,7 +4,12 @@ import { getSession } from "../../utils/helpers.js";
 import { renderStep } from "../render/renderStep.js";
 
 export async function vehicleDataHandler(ctx) {
-  const session = getSession(ctx.chat.id);
+  const chatId =
+    ctx.chat?.id ??
+    ctx.callbackQuery?.message?.chat?.id ??
+    ctx.update?.callback_query?.message?.chat?.id;
+
+  const session = getSession(chatId);
 
   // ❗ Приймаємо текст ТІЛЬКИ якщо FSM у правильному стані (щоб захистити сценарій)
   if (session.step !== STEPS.VEHICLE_DATA) {

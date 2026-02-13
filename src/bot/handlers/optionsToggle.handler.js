@@ -5,7 +5,12 @@ import { renderStep } from "../render/renderStep.js";
 export async function optionsToggleHandler(ctx) {
   console.log("🔘 optionsToggleHandler", ctx.callbackQuery.data);
 
-  const session = getSession(ctx.chat.id);
+  const chatId =
+    ctx.chat?.id ??
+    ctx.callbackQuery?.message?.chat?.id ??
+    ctx.update?.callback_query?.message?.chat?.id;
+
+  const session = getSession(chatId);
 
   // FSM guard
   if (session.step !== STEPS.OPTIONS) {

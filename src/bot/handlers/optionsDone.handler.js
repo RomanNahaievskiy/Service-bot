@@ -3,6 +3,7 @@ import { renderStep } from "../render/renderStep.js";
 import { STEPS } from "../../core/fsm/steps.js";
 import { goToStep } from "../../core/fsm/transition.js";
 import { getSession } from "../../utils/helpers.js"; // <-- у тебе воно є
+import { sheetsApi } from "../../integrations/sheetsApi.js"; // залежність для контрактного прайсу
 
 export async function optionsDoneHandler(ctx) {
   console.log("✅ optionsDoneHandler triggered");
@@ -44,7 +45,8 @@ export async function optionsDoneHandler(ctx) {
     "passenger";
   session.data.vehicleGroup = group; // щоб далі було стабільно
 
-  const optionIds = session.data.optionsIds ?? [];
+  const optionIds = session.data.optionIds ?? [];
+  session.data.optionIds = optionIds; // щоб поле було канонічним
 
   if (!vehicleId) {
     await ctx.answerCbQuery("⚠️ Спочатку оберіть тип транспорту", {
@@ -56,18 +58,28 @@ export async function optionsDoneHandler(ctx) {
   console.log("DBG", { vehicleId, group, optionIds, step: session.step });
 
   try {
-    const pricing = await calcPricing({ vehicleId, group, optionIds });
+    if (session.data.clientType === "contract") {
+      // для контракту ціни беремо з GAS
+      const pricing = await sheetsApi.contractPricingGet({
+        contractNo: session.data.contractNo,
+        vehicleId,
+        serviceId: session.data.serviceId || "wash",
+        optionIds,
+      });
+      session.data.pricing = pricing;
+    } else {
+      const pricing = await calcPricing({ vehicleId, group, optionIds });
 
-    session.data.pricing = {
-      totalPrice: pricing.totalPrice,
-      totalDurationMin: pricing.totalDurationMin,
-      basePrice: pricing.basePrice,
-      baseDurationMin: pricing.baseDurationMin,
-      optionsPrice: pricing.optionsPrice,
-      optionsDurationMin: pricing.optionsDurationMin,
-      selectedOptions: pricing.selectedOptions,
-    };
-
+      session.data.pricing = {
+        totalPrice: pricing.totalPrice,
+        totalDurationMin: pricing.totalDurationMin,
+        basePrice: pricing.basePrice,
+        baseDurationMin: pricing.baseDurationMin,
+        optionsPrice: pricing.optionsPrice,
+        optionsDurationMin: pricing.optionsDurationMin,
+        selectedOptions: pricing.selectedOptions,
+      };
+    }
     await ctx.answerCbQuery("✅ Готово");
 
     if (session.data.clientType === "contract") {
