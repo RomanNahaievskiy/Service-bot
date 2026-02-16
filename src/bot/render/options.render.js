@@ -85,7 +85,10 @@ import { sheetsApi } from "../../integrations/sheetsApi.js"; // залежніс
 // }
 
 export async function renderOptions(ctx, session) {
-  await ensureContractPricingForOptions(session);
+  await ensureContractPricingForOptions(session);// багаторесурсна хрєнь потребує кешування!!! 
+  // щоб не стріляти GAS кожен раз при рендері, якщо це контракт і ми вже підвантажували ціни для цього набору виборів 
+  // (contractNo + vehicleId + serviceId + optionIds) , бо вони можуть бути індивідуальними і змінюватися в залежності від вибору користувача, 
+  // тому важливо мати актуальні дані перед рендером
 
   const prices = session.data?.prices; // дефолтні рітейл ціни  (але prices != ensureContractPricingForOptions , бо там pricing )
 

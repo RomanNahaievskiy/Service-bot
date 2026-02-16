@@ -4,9 +4,9 @@ import { formatDate } from "../../core/domain/dates.js";
 
 export async function renderDone(ctx, session) {
   const serviceTitle =
-    typeof session.data.service === "string"
-      ? session.data.service
-      : session.data.service?.title || "—";
+    typeof session.data.serviceTitle === "string"
+      ? session.data.serviceTitle
+      : session.data.serviceTitle || "—";
 
   // якщо ти вже перейшов на prices_get:
   const vehicleTitle =
