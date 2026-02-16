@@ -87,7 +87,8 @@ import { sheetsApi } from "../../integrations/sheetsApi.js"; // залежніс
 export async function renderOptions(ctx, session) {
   await ensureContractPricingForOptions(session);
 
-  const prices = session.data?.prices;
+  const prices = session.data?.prices; // дефолтні рітейл ціни  (але prices != ensureContractPricingForOptions , бо там pricing )
+
   const vehicleId = session.data?.vehicleId;
   const vehicleGroup = session.data?.vehicleGroup;
 
@@ -110,15 +111,15 @@ export async function renderOptions(ctx, session) {
     return true;
   });
 
+  const isContract = session.data?.clientType === "contract";
   const buttons = options.map((o) => {
     const isOn = selected.includes(o.optionId);
     const mark = isOn ? "✅" : "⬜️";
-    return [
-      Markup.button.callback(
-        `${mark} ${o.optionTitle} (+${o.price} грн / ${o.durationMin} хв)`,
-        `OPT_TOGGLE_${o.optionId}`,
-      ),
-    ];
+
+    const label = isContract
+      ? `${mark} ${o.optionTitle} (ціна за договором)`
+      : `${mark} ${o.optionTitle}(+${o.price} грн / ${o.durationMin} хв)`; // для контракту не показуємо ціну та час, бо вони можуть бути індивідуальними і вже враховані в загальному прайсі
+    return [Markup.button.callback(label, `OPT_TOGGLE_${o.optionId}`)];
   });
 
   // ✅ summary: contract беремо з pricing, retail — рахуємо
