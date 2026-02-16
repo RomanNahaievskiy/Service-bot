@@ -53,7 +53,7 @@ export async function serviceHandler(ctx) {
   // спеціальна логіка для типу клієнта
   if (service.id === "wash_contract") {
     session.data.prices = []; // очищаємо прайс чи краще оновити? , бо для контракту будуть другі ціни
-    session.data.prices = await sheetsApi.contractPricingGet(); // оновлюємо прайс для контракту (якщо він відрізняється від рітейлу)
+    // session.data.prices = await sheetsApi.contractPricingGet(); // оновлюємо прайс для контракту (якщо він відрізняється від рітейлу)
     session.data.clientType = "contract";
     goToStep(session, STEPS.CONTRACT_NO);
   } else {

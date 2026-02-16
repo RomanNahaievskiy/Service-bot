@@ -18,7 +18,7 @@ export async function contractNoHandler(ctx) {
 
   //   session.data.clientType = "contract"; // необов'язково, вже встановлено раніше
   session.data.contractNo = contractNo;
-
+  //! session.data.prices = await sheetsApi.contractPricingGet({ contractNo, vehicleId, serviceId, optionIds })
   const vehicles = await sheetsApi.contractVehiclesGet({ contractNo }); // отримуємо ТЗ за номером договору
 
   if (!vehicles.length) {

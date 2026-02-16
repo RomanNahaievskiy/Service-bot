@@ -207,7 +207,7 @@ async function ensureContractPricingForOptions(session) {
   // 🔒 simple cache key щоб не стріляти GAS кожен раз без потреби
   const key = `${contractNo}|${vehicleId}|${serviceId}|${optionIds.join(",")}`;
   if (d._contractPricingKey === key && d.pricing?.source === "contract") return;
-
+  console.log("🔄 Fetching contract pricing for options from GAS...");
   const pricing = await sheetsApi.contractPricingGet({
     contractNo,
     vehicleId,
@@ -218,4 +218,6 @@ async function ensureContractPricingForOptions(session) {
   d.pricing = pricing; // canonical payload
   d._contractPricingKey = key;
   session.data = d;
+  console.log("✅ Contract pricing updated in session.data.pricing");
+  console.log("Current contract pricing:", pricing);
 }
