@@ -11,3 +11,11 @@ const r = await sheetsApi.createBooking({
   comment: "from bot code",
 });
 console.log(r);
+
+("contract_pricing_get",
+  {
+    contractNo: "KLR-00123",
+    vehicleId: "bus_doubus_double",
+    serviceId: "contract_wash",
+    optionIds: ["undercarriage"],
+  });

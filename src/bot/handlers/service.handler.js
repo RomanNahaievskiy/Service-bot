@@ -5,6 +5,7 @@ import { goToStep } from "../../core/fsm/transition.js";
 import { renderStep } from "../render/renderStep.js";
 
 import { getPriceConfig } from "../../core/services/pricing.service.js";
+import { sheetsApi } from "../../integrations/sheetsApi.js";
 
 // Обробник вибору послуги
 export async function serviceHandler(ctx) {
@@ -29,6 +30,15 @@ export async function serviceHandler(ctx) {
   session.data.serviceTitle = service.title;
 
   // ✅ підвантажуємо прайс з Google Sheets один раз (кеш уже є в pricing.service)
+  //TODO: виправити  отримання прайсу з гугла  відповідо до типу клієнта контракт / рітейл
+  /*зараз цни приходять із 10хвилинного кешу , куди потрапляють із pricing.service.js -> pricesGet() , 
+  який отримує їх із гугла і кешує на 10хвилин, щоб не тягти гугл кожного разу/
+  але це працює без умови на тип клієнта, тому якщо колись додаси різні ціни для контракту та рітейлу, 
+  то треба буде тут дописати логіку, щоб підвантажувати правильний прайс відповідно до вибору користувача
+
+
+  
+  */
   try {
     session.data.prices = await getPriceConfig(); // { vehicles, options } (може +services, якщо колись додаси)
   } catch (e) {
@@ -42,6 +52,8 @@ export async function serviceHandler(ctx) {
   // 2️⃣ змінюємо стан з допомогою transition
   // спеціальна логіка для типу клієнта
   if (service.id === "wash_contract") {
+    session.data.prices = []; // очищаємо прайс чи краще оновити? , бо для контракту будуть другі ціни
+    session.data.prices = await sheetsApi.contractPricingGet(); // оновлюємо прайс для контракту (якщо він відрізняється від рітейлу)
     session.data.clientType = "contract";
     goToStep(session, STEPS.CONTRACT_NO);
   } else {
