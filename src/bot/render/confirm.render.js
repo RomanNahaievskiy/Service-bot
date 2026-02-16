@@ -10,13 +10,19 @@ export async function renderConfirm(ctx, session) {
       ? session.data.serviceTitle
       : session.data.serviceTitle || "—";
 
+  // const vehicleTitle =
+  //   session.data?.prices?.vehicles?.find(
+  //     (v) => v.vehicleId === session.data?.vehicleId,
+  //   )?.vehicleTitle ||
+  //   (typeof session.data.vehicle === "string"
+  //     ? session.data.vehicle
+  //     : session.data.vehicle?.title || "—");
+
   const vehicleTitle =
+    session.data?.vehicleTitle || // якщо вже є в сесії (може бути встановлено раніше, якщо prices_get не виконувався через контракт), то використовуємо його
     session.data?.prices?.vehicles?.find(
       (v) => v.vehicleId === session.data?.vehicleId,
-    )?.vehicleTitle ||
-    (typeof session.data.vehicle === "string"
-      ? session.data.vehicle
-      : session.data.vehicle?.title || "—");
+    )?.vehicleTitle;
 
   const price = session.data?.pricing?.totalPrice;
   const duration = session.data?.pricing?.totalDurationMin;
