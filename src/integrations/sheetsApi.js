@@ -89,6 +89,13 @@ export const sheetsApi = {
         ? optionIds.join(",")
         : String(optionIds || ""),
     }),
+  // отримати ціни та час для опцій окремо, щоб показувати їх в рендері (якщо вони відрізняються від рітейлу і не можна просто показувати базовий прайс)
+  contractOptionPricesGet: ({ contractNo, vehicleId, serviceId }) =>
+    callSheetsGet("contract_option_prices_get", {
+      contractNo: String(contractNo),
+      vehicleId: String(vehicleId),
+      serviceId: String(serviceId || "wash"),
+    }),
   // ===== Reminders =====
   remindersAppend: (rows) => callSheets("reminders_append", { rows }),
   remindersDue: ({ nowISO, limit = 30 } = {}) =>

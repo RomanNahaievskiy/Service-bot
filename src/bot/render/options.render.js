@@ -85,9 +85,9 @@ import { sheetsApi } from "../../integrations/sheetsApi.js"; // залежніс
 // }
 
 export async function renderOptions(ctx, session) {
-  await ensureContractPricingForOptions(session);// багаторесурсна хрєнь потребує кешування!!! 
-  // щоб не стріляти GAS кожен раз при рендері, якщо це контракт і ми вже підвантажували ціни для цього набору виборів 
-  // (contractNo + vehicleId + serviceId + optionIds) , бо вони можуть бути індивідуальними і змінюватися в залежності від вибору користувача, 
+  await ensureContractPricingForOptions(session); // багаторесурсна хрєнь потребує кешування!!!
+  // щоб не стріляти GAS кожен раз при рендері, якщо це контракт і ми вже підвантажували ціни для цього набору виборів
+  // (contractNo + vehicleId + serviceId + optionIds) , бо вони можуть бути індивідуальними і змінюватися в залежності від вибору користувача,
   // тому важливо мати актуальні дані перед рендером
 
   const prices = session.data?.prices; // дефолтні рітейл ціни  (але prices != ensureContractPricingForOptions , бо там pricing )
@@ -128,7 +128,8 @@ export async function renderOptions(ctx, session) {
   // ✅ summary: contract беремо з pricing, retail — рахуємо
   let summary;
   if (session.data.clientType === "contract") {
-    summary = session.data.pricing ?? { totalPrice: 0, totalDurationMin: 0 };
+    // summary = session.data.pricing ?? { totalPrice: 0, totalDurationMin: 0 };
+    summary = calculateSummaryContract(session);
   } else {
     summary = calculateSummaryRetail(session); // перейменуємо, щоб було ясно
   }
@@ -173,26 +174,55 @@ function calculateSummaryRetail(session) {
 
 /* ================= helpers ================= */
 
-function calculateSummary(session) {
-  const prices = session.data.prices;
-  const vehicleId = session.data.vehicleId;
-  const selected = session.data.optionIds ?? [];
+// function calculateSummary(session) {
+//   const prices = session.data.prices;
+//   const vehicleId = session.data.vehicleId;
+//   const selected = session.data.optionIds ?? [];
 
-  const vehicle = prices.vehicles.find((v) => v.vehicleId === vehicleId);
+//   const vehicle = prices.vehicles.find((v) => v.vehicleId === vehicleId);
 
-  let totalPrice = vehicle?.basePrice ?? 0;
-  let totalDurationMin = vehicle?.baseDurationMin ?? 0;
+//   let totalPrice = vehicle?.basePrice ?? 0;
+//   let totalDurationMin = vehicle?.baseDurationMin ?? 0;
 
-  for (const optId of selected) {
-    const opt = prices.options.find((o) => o.optionId === optId);
-    if (!opt) continue;
+//   for (const optId of selected) {
+//     const opt = prices.options.find((o) => o.optionId === optId);
+//     if (!opt) continue;
 
-    totalPrice += opt.price || 0;
-    totalDurationMin += opt.durationMin || 0;
+//     totalPrice += opt.price || 0;
+//     totalDurationMin += opt.durationMin || 0;
+//   }
+
+//   // кешуємо для confirm
+//   session.data.pricing = { totalPrice, totalDurationMin };
+
+//   return { totalPrice, totalDurationMin };
+// }
+
+function calculateSummaryContract(session) {
+  const d = session.data || {};
+  const selected = d.optionIds ?? [];
+  const pl = d.pricing; // тут лежить { basePrice, baseDurationMin, optionsPriceList }
+
+  const basePrice = Number(pl?.basePrice || 0);
+  const baseDurationMin = Number(pl?.baseDurationMin || 0);
+
+  const map = new Map(
+    (pl?.optionsPriceList || []).map((o) => [String(o.optionId), o]),
+  );
+
+  let totalPrice = basePrice;
+  let totalDurationMin = baseDurationMin;
+
+  for (const id of selected) {
+    const o = map.get(String(id));
+    if (!o) continue;
+    totalPrice += Number(o.price || 0);
+    totalDurationMin += Number(o.durationMin || 0);
   }
 
-  // кешуємо для confirm
-  session.data.pricing = { totalPrice, totalDurationMin };
+  // кешуємо totals окремо, щоб CONFIRM їх бачив
+  d.summary = { totalPrice, totalDurationMin };
+  session.data = d;
 
   return { totalPrice, totalDurationMin };
 }
@@ -204,19 +234,26 @@ async function ensureContractPricingForOptions(session) {
   const contractNo = d.contractNo;
   const vehicleId = d.vehicleId;
   const serviceId = d.serviceId || "wash";
-  const optionIds = d.optionIds ?? [];
+  // const optionIds = d.optionIds ?? [];
 
   if (!contractNo || !vehicleId) return; // guard
 
   // 🔒 simple cache key щоб не стріляти GAS кожен раз без потреби
-  const key = `${contractNo}|${vehicleId}|${serviceId}|${optionIds.join(",")}`;
+  const key = `${contractNo}|${vehicleId}|${serviceId}`;
+
   if (d._contractPricingKey === key && d.pricing?.source === "contract") return;
   console.log("🔄 Fetching contract pricing for options from GAS...");
-  const pricing = await sheetsApi.contractPricingGet({
+  // const pricing = await sheetsApi.contractPricingGet({
+  //   contractNo,
+  //   vehicleId,
+  //   serviceId,
+  //   optionIds,
+  // });
+
+  const pricing = await sheetsApi.contractOptionPricesGet({
     contractNo,
     vehicleId,
     serviceId,
-    optionIds,
   });
 
   d.pricing = pricing; // canonical payload
