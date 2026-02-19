@@ -150,7 +150,7 @@ export async function renderOptions(ctx, session) {
 
 /* ===== retail only ===== */
 function calculateSummaryRetail(session) {
-  const prices = session.data.prices;
+  const prices = session.data.prices; //всі ціни, включаючи опції, які ми отримали з GAS при виборі транспорту (але без контрактних, бо вони підтягуються окремо і мають пріоритет для контракту)
   const vehicleId = session.data.vehicleId;
   const selected = session.data.optionIds ?? [];
 
@@ -168,7 +168,7 @@ function calculateSummaryRetail(session) {
 
   // ✅ retail кешуємо, contract — НЕ чіпаємо
   session.data.pricing = { totalPrice, totalDurationMin, source: "retail" };
-
+  console.log("Updated session.data.pricing for retail:", session.data.pricing);
   return { totalPrice, totalDurationMin };
 }
 
@@ -260,5 +260,5 @@ async function ensureContractPricingForOptions(session) {
   d._contractPricingKey = key;
   session.data = d;
   console.log("✅ Contract pricing updated in session.data.pricing");
-  console.log("Current contract pricing:", pricing);
+  console.log("Current contract session.data.pricing:", pricing);
 }

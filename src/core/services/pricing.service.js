@@ -41,14 +41,14 @@ export async function calcPricing({ vehicleId, group, optionIds = [] }) {
   const optionsPrice = selected.reduce((s, o) => s + Number(o.price || 0), 0);
   const optionsDurationMin = selected.reduce(
     (s, o) => s + Number(o.durationMin || 0),
-    0
+    0,
   );
 
   const totalPrice = basePrice + optionsPrice;
   const totalDurationMin = baseDurationMin + optionsDurationMin;
 
   return {
-    vehicle,
+    vehicle, //можливо тут буде корисно vehicleId і vehicleTitle, щоб не шукати їх знову в сесії для confirm
     selectedOptions: selected,
     basePrice,
     baseDurationMin,

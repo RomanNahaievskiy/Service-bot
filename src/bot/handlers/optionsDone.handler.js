@@ -59,14 +59,9 @@ export async function optionsDoneHandler(ctx) {
 
   try {
     if (session.data.clientType === "contract") {
-      // для контракту ціни беремо з GAS
-      const pricing = await sheetsApi.contractPricingGet({
-        contractNo: session.data.contractNo,
-        vehicleId,
-        serviceId: session.data.serviceId || "wash",
-        optionIds,
-      });
-      session.data.pricing = pricing;
+      // ✅ contract: totals рахуємо локально з прайс-листа, GAS тут не чіпаємо
+      const totals = calcContractTotals_(session);
+      session.data.pricingTotals = totals; // для DATE/CONFIRM
     } else {
       const pricing = await calcPricing({ vehicleId, group, optionIds });
 
@@ -94,4 +89,29 @@ export async function optionsDoneHandler(ctx) {
     await ctx.answerCbQuery("❌ Помилка розрахунку", { show_alert: true });
     return renderStep(ctx, session);
   }
+}
+
+function calcContractTotals_(session) {
+  const d = session.data || {};
+  const pl = d.pricing; // { basePrice, baseDurationMin, optionsPriceList, ... }
+  const selected = d.optionIds ?? [];
+
+  const basePrice = Number(pl?.basePrice || 0);
+  const baseDurationMin = Number(pl?.baseDurationMin || 0);
+
+  const map = new Map(
+    (pl?.optionsPriceList || []).map((o) => [String(o.optionId), o]),
+  );
+
+  let totalPrice = basePrice;
+  let totalDurationMin = baseDurationMin;
+
+  for (const id of selected) {
+    const o = map.get(String(id));
+    if (!o) continue;
+    totalPrice += Number(o.price || 0);
+    totalDurationMin += Number(o.durationMin || 0);
+  }
+
+  return { totalPrice, totalDurationMin };
 }
