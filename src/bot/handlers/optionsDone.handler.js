@@ -62,6 +62,13 @@ export async function optionsDoneHandler(ctx) {
       // ✅ contract: totals рахуємо локально з прайс-листа, GAS тут не чіпаємо
       const totals = calcContractTotals_(session);
       session.data.pricingTotals = totals; // для DATE/CONFIRM
+      // чи можна тут  зробити канонічну структуру для прайсу, щоб CONFIRM не заморочувався і просто брав звідси? наприклад, session.data.pricing = { totalPrice, totalDurationMin, source: "contract" }
+      session.data.pricing = {
+        ...session.data.pricing, // ← зберігаємо basePrice + optionsPriceList
+        totalPrice: totals.totalPrice,
+        totalDurationMin: totals.totalDurationMin,
+        source: "contract",
+      };
     } else {
       const pricing = await calcPricing({ vehicleId, group, optionIds });
 
