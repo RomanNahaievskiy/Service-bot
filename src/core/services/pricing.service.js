@@ -27,7 +27,7 @@ function applicable(option, { group, vehicleId }) {
 // розрахунок ціни та тривалості послуги
 export async function calcPricing({ vehicleId, group, optionIds = [] }) {
   const { vehicles, options } = await getPriceConfig();
-
+  console.log("calcPricing", options[0]); //DBG
   const vehicle = vehicles.find((v) => v.vehicleId === vehicleId);
   if (!vehicle) throw new Error(`Unknown vehicleId: ${vehicleId}`);
 
