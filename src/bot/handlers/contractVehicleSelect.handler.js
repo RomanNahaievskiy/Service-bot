@@ -31,7 +31,8 @@ export async function contractVehicleSelectHandler(ctx) {
 
   session.data.vehicleNumber = v.vehicleNumber;
   session.data.vehicleId = v.vehicleId;
-  session.data.vehicleTitle = v.alias || v.vehicleNumber;
+  // session.data.vehicleTitle = v.alias || v.vehicleNumber;
+  session.data.vehicleTitle = v.vehicleTitle || v.vehicleNumber;
 
   await ctx.answerCbQuery("✅ Обрано");
   // goToStep(session, STEPS.DATE); // тут треба перейти до вибору опцій
