@@ -30,6 +30,16 @@ export async function optionsToggleHandler(ctx) {
   //   // ✅ вмикаємо
   //   session.data.optionIds.push(optionId);
   // }
+  const prices = session.data?.prices;
+  const allOptions = prices?.options ?? [];
+  const opt = allOptions.find((o) => String(o.optionId) === String(optionId));
+
+  if (!opt) {
+    console.log("⚠️ option not found in prices.options:", optionId);
+    await ctx.answerCbQuery();
+    return renderStep(ctx, session);
+  }
+
   const selected = session.data.optionIds;
   const isSelected = selected.includes(optionId);
 
