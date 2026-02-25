@@ -40,6 +40,8 @@ export async function renderConfirm(ctx, session) {
     ctx,
     `✅ Перевірте дані запису:\n\n` +
       `Послуга: ${serviceTitle}\n` +
+      //показуємо додаткові послуги
+      `${session.data.optionTitles ? `Додаткові послуги: ${session.data.optionTitles}\n` : ""}` +
       `ТЗ: ${vehicleTitle}\n` +
       `Реєстраційний номер: ${session.data.vehicleNumber || "—"}\n` +
       `Дата: ${formatDate(session.data.date)}\n` +

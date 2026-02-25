@@ -145,7 +145,7 @@ export async function renderOptions(ctx, session) {
       `${isContract ? "💰 Контрактна вартість:(Згідно договору) " : "💰 Поточна вартість: "} ${summary.totalPrice} грн\n` +
       `⏱ Тривалість: ${summary.totalDurationMin} хв\n
       ${
-        // показати назви вибраних опцій, якщо вони є
+        // показати назви вибраних оп
         selected.length > 0
           ? `📋 Вибрані послуги: ${selected
               .map(
