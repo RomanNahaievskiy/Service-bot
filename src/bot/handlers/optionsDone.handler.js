@@ -48,6 +48,19 @@ export async function optionsDoneHandler(ctx) {
   const optionIds = session.data.optionIds ?? [];
   session.data.optionIds = optionIds; // щоб поле було канонічним
 
+  //optionTitles зберігаємо в сесію ( але варто коли вже всі toggle відпрацюють, щоб не шукати кожного разу по id в прайсі)
+  session.data.optionTitles =
+    selected.length > 0
+      ? selected
+          .map((id) =>
+            allOptions.find((o) => String(o.optionId) === String(id)),
+          )
+          .filter(Boolean) // якщо опція з якихось причин не знайдеться (хоча має бути), то просто пропускаємо її, щоб не було помилки
+          .map((o) => o.optionTitle)
+      : [];
+
+  console.log("DBG optionsDoneHandler", session.data.optionTitles);
+
   if (!vehicleId) {
     await ctx.answerCbQuery("⚠️ Спочатку оберіть тип транспорту", {
       show_alert: true,
