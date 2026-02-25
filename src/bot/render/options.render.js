@@ -120,7 +120,7 @@ export async function renderOptions(ctx, session) {
     const mark = isOn ? "✅" : "⬜️";
 
     const label = isContract
-      ? `${mark} ${o.optionTitle} (ціна за договором)`
+      ? `${mark} ${o.optionTitle} (+ ${o.durationMin} хв)`
       : `${mark} ${o.optionTitle}(+${o.price} грн / ${o.durationMin} хв)`; // для контракту не показуємо ціну та час, бо вони можуть бути індивідуальними і вже враховані в загальному прайсі
     return [Markup.button.callback(label, `OPT_TOGGLE_${o.optionId}`)];
   });
@@ -142,8 +142,20 @@ export async function renderOptions(ctx, session) {
   return safeEditOrReply(
     ctx,
     `➕ Додаткові послуги\n\n` +
-      `💰 Поточна вартість: ${summary.totalPrice} грн\n` +
-      `⏱ Тривалість: ${summary.totalDurationMin} хв`,
+      `${isContract ? "💰 Контрактна вартість:(Згідно договору) " : "💰 Поточна вартість: "} ${summary.totalPrice} грн\n` +
+      `⏱ Тривалість: ${summary.totalDurationMin} хв\n
+      ${
+        // показати назви вибраних опцій, якщо вони є
+        selected.length > 0
+          ? `📋 Вибрані послуги: ${selected
+              .map(
+                (id) =>
+                  prices.options.find((o) => o.optionId === id)?.optionTitle,
+              )
+              .filter(Boolean)
+              .join(", ")}`
+          : ""
+      }`,
     Markup.inlineKeyboard(buttons),
   );
 }
