@@ -41,16 +41,7 @@ export async function optionsToggleHandler(ctx) {
   }
 
   const selected = session.data.optionIds;
-  //optionTitles
-  session.data.optionTitles =
-    selected.length > 0
-      ? selected
-          .map((id) =>
-            allOptions.find((o) => String(o.optionId) === String(id)),
-          )
-          .filter(Boolean) // якщо опція з якихось причин не знайдеться (хоча має бути), то просто пропускаємо її, щоб не було помилки
-          .map((o) => o.optionTitle)
-      : [];
+
   const isSelected = selected.includes(optionId);
 
   if (isSelected) {
@@ -78,6 +69,16 @@ export async function optionsToggleHandler(ctx) {
     session.data.optionIds.push(optionId);
   }
 
+  //optionTitles
+  session.data.optionTitles =
+    selected.length > 0
+      ? selected
+          .map((id) =>
+            allOptions.find((o) => String(o.optionId) === String(id)),
+          )
+          .filter(Boolean) // якщо опція з якихось причин не знайдеться (хоча має бути), то просто пропускаємо її, щоб не було помилки
+          .map((o) => o.optionTitle)
+      : [];
   await ctx.answerCbQuery();
 
   // просто перемальовуємо той самий крок
