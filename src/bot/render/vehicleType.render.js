@@ -9,7 +9,7 @@ export async function renderVehicleType(ctx, session) {
     return safeEditOrReply(
       ctx,
       "❌ Не вибрано групу транспорту. Натисніть «Назад» і оберіть тип.",
-      Markup.inlineKeyboard([[Markup.button.callback("⬅️ Назад", "BACK")]])
+      Markup.inlineKeyboard([[Markup.button.callback("⬅️ Назад", "BACK")]]),
     );
   }
 
@@ -21,7 +21,7 @@ export async function renderVehicleType(ctx, session) {
       Markup.inlineKeyboard([
         [Markup.button.callback("⬅️ Назад", "BACK")],
         [Markup.button.callback("↩️ На початок", "START_OVER")],
-      ])
+      ]),
     );
   }
 
@@ -33,7 +33,7 @@ export async function renderVehicleType(ctx, session) {
     return safeEditOrReply(
       ctx,
       "❌ Для цього типу транспорту наразі немає доступних варіантів.",
-      Markup.inlineKeyboard([[Markup.button.callback("⬅️ Назад", "BACK")]])
+      Markup.inlineKeyboard([[Markup.button.callback("⬅️ Назад", "BACK")]]),
     );
   }
 
@@ -41,7 +41,7 @@ export async function renderVehicleType(ctx, session) {
   const keyboard = list.map((v) => [
     Markup.button.callback(
       `${v.vehicleTitle} — ${v.basePrice} грн`,
-      `VEH_${v.vehicleId}`
+      `VEH_${v.vehicleId}`,
     ),
   ]);
 
@@ -49,8 +49,8 @@ export async function renderVehicleType(ctx, session) {
 
   return safeEditOrReply(
     ctx,
-    `🚗 Оберіть транспорт (${groupTitle(group)}):`,
-    Markup.inlineKeyboard(keyboard)
+    `🚗 Оберіть транспорт (Ціни портальної мийки)  (${groupTitle(group)}):`,
+    Markup.inlineKeyboard(keyboard),
   );
 }
 
