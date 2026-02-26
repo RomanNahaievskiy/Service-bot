@@ -28,14 +28,14 @@ export async function renderConfirm(ctx, session) {
   const duration = session.data?.pricing?.totalDurationMin;
 
   const isContract = session.data.clientType === "contract";
-
+  let extra = "";
   if (isContract) {
-    const extra =
+    extra =
       price || duration
         ? `\nВартість: Згідно умов договору\nТривалість: ${duration ?? "—"} хв\n`
         : "";
   } else {
-    const extra =
+    extra =
       price || duration
         ? `\nВартість: ${price ?? "—"} грн\nТривалість: ${duration ?? "—"} хв\n`
         : "";
