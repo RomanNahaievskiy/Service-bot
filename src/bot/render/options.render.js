@@ -142,7 +142,7 @@ export async function renderOptions(ctx, session) {
   return safeEditOrReply(
     ctx,
     `➕ Додаткові послуги\n\n` +
-      `${isContract ? "💰 Контрактна вартість:(Згідно договору) " : "💰 Поточна вартість: "} ${summary.totalPrice} грн\n` +
+      `${isContract ? "💰 Вартість згідно умов договору " : `💰 Поточна вартість: ${summary.totalPrice} грн\n`} ` +
       `⏱ Тривалість: ${summary.totalDurationMin} хв\n
       ${
         // показати назви вибраних опцій також в хендлері зберегти в сесію, щоб не шукати кожного разу по id
@@ -272,5 +272,5 @@ async function ensureContractPricingForOptions(session) {
   d._contractPricingKey = key;
   session.data = d;
   console.log("✅ Contract pricing updated in session.data.pricing");
-  console.log("Current contract session.data.pricing:", pricing);
+  // console.log("Current contract session.data.pricing:", pricing);
 }
