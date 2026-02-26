@@ -7,6 +7,7 @@ export async function renderDone(ctx, session) {
     typeof session.data.serviceTitle === "string"
       ? session.data.serviceTitle
       : session.data.serviceTitle || "—";
+  const optionTitles = session.data.optionTitles || [];
 
   // якщо ти вже перейшов на prices_get:
   // const vehicleTitle =
@@ -17,7 +18,7 @@ export async function renderDone(ctx, session) {
   //   ? session.data.vehicle
   //   : session.data.vehicle?.title || "—");
   const vehicleTitle =
-    session.data?.vehicleTitle ||// якщо вже є в сесії (може бути встановлено раніше, якщо prices_get не виконувався через контракт), то використовуємо його
+    session.data?.vehicleTitle || // якщо вже є в сесії (може бути встановлено раніше, якщо prices_get не виконувався через контракт), то використовуємо його
     session.data?.prices?.vehicles?.find(
       (v) => v.vehicleId === session.data?.vehicleId,
     )?.vehicleTitle;
@@ -31,12 +32,18 @@ export async function renderDone(ctx, session) {
     ? String(session.data.fullName)
     : null;
 
-  const extra =
-    price || duration
-      ? `\n💰 Вартість: ${price ?? "—"} грн\n⏱ Тривалість: ${
-          duration ?? "—"
-        } хв`
-      : "";
+  const isContract = session.data.clientType === "contract";
+  let extra = "";
+  if (isContract) {
+    extra = `\n💰 Вартість: Згідно умов договору\n⏱ Тривалість: ${duration ?? "—"} хв`;
+  } else {
+    extra =
+      price || duration
+        ? `\n💰 Вартість: ${price ?? "—"} грн\n⏱ Тривалість: ${
+            duration ?? "—"
+          } хв`
+        : "";
+  }
 
   const contact =
     fullName || phone
@@ -71,6 +78,7 @@ export async function renderDone(ctx, session) {
   const text =
     `🎉 Запис створено!\n\n` +
     `Послуга: ${serviceTitle}\n` +
+    `Додаткові послуги: ${optionTitles.length ? optionTitles.join(", ") : "—"}\n` +
     `Транспорт: ${vehicleTitle}\n` +
     `Реєстраційний номер: ${session.data.vehicleNumber || "—"}\n` +
     `Дата: ${formatDate(session.data.date)}\n` +
