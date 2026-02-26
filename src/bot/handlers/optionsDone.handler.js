@@ -50,6 +50,7 @@ export async function optionsDoneHandler(ctx) {
 
   //optionTitles зберігаємо в сесію ( але варто коли вже всі toggle відпрацюють, щоб не шукати кожного разу по id в прайсі)
   const selected = session.data.optionIds;
+  const allOptions = session.data?.prices?.options ?? [];
   session.data.optionTitles =
     selected.length > 0
       ? selected
