@@ -27,10 +27,19 @@ export async function renderConfirm(ctx, session) {
   const price = session.data?.pricing?.totalPrice;
   const duration = session.data?.pricing?.totalDurationMin;
 
-  const extra =
-    price || duration
-      ? `\nВартість: ${price ?? "—"} грн\nТривалість: ${duration ?? "—"} хв\n`
-      : "";
+  const isContract = session.data.clientType === "contract";
+
+  if (isContract) {
+    const extra =
+      price || duration
+        ? `\nВартість: Згідно умов договору\nТривалість: ${duration ?? "—"} хв\n`
+        : "";
+  } else {
+    const extra =
+      price || duration
+        ? `\nВартість: ${price ?? "—"} грн\nТривалість: ${duration ?? "—"} хв\n`
+        : "";
+  }
 
   const errBlock = err
     ? `\n\n❌ Помилка: ${err}\nСпробуйте ще раз або поверніться назад.`
@@ -42,8 +51,8 @@ export async function renderConfirm(ctx, session) {
       `Послуга: ${serviceTitle}\n` +
       //показуємо додаткові послуги
       `${session.data.optionTitles ? `Додаткові послуги: \n + ${session.data.optionTitles.join("\n + ")}\n` : ""}` + //потрібно зберігати в сесію
-      `ТЗ: ${vehicleTitle}\n` +
-      `Реєстраційний номер: ${session.data.vehicleNumber || "—"}\n` +
+      `Т/З: ${vehicleTitle}\n` +
+      `Р/Н: ${session.data.vehicleNumber || "—"}\n` +
       `Дата: ${formatDate(session.data.date)}\n` +
       `Час: ${session.data.time}\n` +
       extra +
