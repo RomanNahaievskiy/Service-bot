@@ -50,7 +50,7 @@ export async function renderConfirm(ctx, session) {
     `✅ Перевірте дані запису:\n\n` +
       `Послуга: ${serviceTitle}\n` +
       //показуємо додаткові послуги
-      `${session.data.optionTitles ? `Додаткові послуги: \n + ${session.data.optionTitles.join("\n + ")}\n` : ""}` + //потрібно зберігати в сесію
+      `${session.data.optionTitles && session.data.optionTitles.length ? `Додаткові послуги: \n + ${session.data.optionTitles.join("\n + ")}\n` : ""}` + //потрібно зберігати в сесію
       `Т/З: ${vehicleTitle}\n` +
       `Р/Н: ${session.data.vehicleNumber || "—"}\n` +
       `Дата: ${formatDate(session.data.date)}\n` +
