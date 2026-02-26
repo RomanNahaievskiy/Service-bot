@@ -49,6 +49,7 @@ export async function optionsDoneHandler(ctx) {
   session.data.optionIds = optionIds; // щоб поле було канонічним
 
   //optionTitles зберігаємо в сесію ( але варто коли вже всі toggle відпрацюють, щоб не шукати кожного разу по id в прайсі)
+  const selected = session.data.optionIds;
   session.data.optionTitles =
     selected.length > 0
       ? selected
