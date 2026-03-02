@@ -10,10 +10,11 @@ export function renderContractNo(ctx, session) {
   //     remove_keyboard: true,
   //   }
   // });
+  const err = session.data.contractNoError;
 
   return safeEditOrReply(
     ctx,
-    "Будь ласка, введіть номер вашого договору 👇",
+    err ? `❌ ${err}` : "Будь ласка, введіть номер вашого договору 👇",
     Markup.inlineKeyboard([
       [Markup.button.callback("⬅️ Назад", "BACK")],
       [Markup.button.callback("↩️ На початок", "START_OVER")],
