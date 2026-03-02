@@ -12,7 +12,7 @@ export async function renderVehicleGroup(ctx, session) {
   if (!vehicles.length) {
     return safeEditOrReply(
       ctx,
-      "❌ Наразі типи транспорту недоступні. Спробуйте пізніше."
+      "❌ Наразі типи транспорту недоступні. Спробуйте пізніше.",
     );
   }
 
@@ -38,8 +38,8 @@ export async function renderVehicleGroup(ctx, session) {
 
   return safeEditOrReply(
     ctx,
-    "🚗 Оберіть тип транспорту:",
-    Markup.inlineKeyboard(buttons)
+    "🚗 Оберіть вид транспорту:",
+    Markup.inlineKeyboard(buttons),
   );
 }
 

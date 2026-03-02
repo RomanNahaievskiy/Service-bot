@@ -49,7 +49,7 @@ export async function renderVehicleType(ctx, session) {
 
   return safeEditOrReply(
     ctx,
-    `🚗 Оберіть транспорт (Ціни портальної мийки)  (${groupTitle(group)}):`,
+    `🚗 Оберіть тип транспорту (Ціни портальної мийки)  (${groupTitle(group)}):`,
     Markup.inlineKeyboard(keyboard),
   );
 }
