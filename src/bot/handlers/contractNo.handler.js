@@ -22,7 +22,7 @@ export async function contractNoHandler(ctx) {
   const vehicles = await sheetsApi.contractVehiclesGet({ contractNo }); // отримуємо ТЗ за номером договору
 
   if (!vehicles.length) {
-    session.data.contractNoError = "Договір не знайдено або немає активних ТЗ.";
+    session.data.contractNoError = `Договір ${contractNo} не знайдено.`; // (або немає активних транспортних засобів) помилка для рендера
     // лишаємось на CONTRACT_NO
     return renderStep(ctx, session); // вже там має рендеритися набір кнопок із номерами транспортних засобів за договором  із session.data.contractVehicles
   }

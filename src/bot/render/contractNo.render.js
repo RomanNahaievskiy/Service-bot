@@ -16,7 +16,7 @@ export function renderContractNo(ctx, session) {
   return safeEditOrReply(
     ctx,
     err
-      ? `❌ ${err},\n ви ввели: ${contractNo} ?`
+      ? `❌ ${err},\n Перевірте номер договору та спробуйте ще раз`
       : "Будь ласка, введіть номер вашого договору 👇",
     Markup.inlineKeyboard([
       [Markup.button.callback("⬅️ Назад", "BACK")],
