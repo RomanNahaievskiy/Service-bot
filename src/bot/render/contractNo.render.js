@@ -11,10 +11,13 @@ export function renderContractNo(ctx, session) {
   //   }
   // });
   const err = session.data.contractNoError;
+  const contractNo = session.data.contractNo;
 
   return safeEditOrReply(
     ctx,
-    err ? `❌ ${err}` : "Будь ласка, введіть номер вашого договору 👇",
+    err
+      ? `❌ ${err},\n ви ввели: ${contractNo} ?`
+      : "Будь ласка, введіть номер вашого договору 👇",
     Markup.inlineKeyboard([
       [Markup.button.callback("⬅️ Назад", "BACK")],
       [Markup.button.callback("↩️ На початок", "START_OVER")],
