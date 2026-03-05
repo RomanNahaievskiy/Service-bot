@@ -26,7 +26,7 @@ async function callSheets(action, payload = {}) {
     const e = new Error(data.error || "Sheets API error");
     if (data.code) e.code = data.code;
     if (data.bookingId) e.bookingId = data.bookingId;
-    console.log("SHEETS ERROR RAW:", data); // для дебагу помилок, які приходять з API, щоб бачити код помилки і інші дані
+    // console.log("SHEETS ERROR RAW:", data); // для дебагу помилок, які приходять з API, щоб бачити код помилки і інші дані
     throw e;
   }
   return data.data;
@@ -57,7 +57,7 @@ async function callSheetsGet(action, params = {}) {
     const e = new Error(data.error || "Sheets API error");
     if (data.code) e.code = data.code;
     if (data.bookingId) e.bookingId = data.bookingId;
-    console.log("SHEETS ERROR RAW:", data); // для дебагу помилок, які приходять з API, щоб бачити код помилки і інші дані
+    // console.log("SHEETS ERROR RAW:", data); // для дебагу помилок, які приходять з API, щоб бачити код помилки і інші дані
     throw e;
   }
   return data.data;

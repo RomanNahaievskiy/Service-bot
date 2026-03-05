@@ -74,12 +74,7 @@ export async function confirmHandler(ctx) {
 
     if (err.code === "SLOT_CONFLICT") {
       session.data.confirmError = "Цей час вже хтось бронює...";
-      setStep(session, STEPS.TIME); // повертаємо на вибір часу, щоб користувач міг обрати інший час
-      console.log(
-        "❌ Time slot conflict detected for booking id",
-        err.bookingId,
-      );
-      console.log("CONFIRM: session data", session.data);
+      setStep(session, STEPS.DATE); // повертаємо на вибір часу, щоб користувач міг обрати інший час
     }
 
     await ctx.answerCbQuery("❌ Помилка створення запису", {
