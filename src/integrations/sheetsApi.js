@@ -22,7 +22,13 @@ async function callSheets(action, payload = {}) {
     throw new Error("Sheets API returned non-JSON: " + text.slice(0, 200));
   }
 
-  if (!data.ok) throw new Error(data.error || "Sheets API error");
+  if (!data.ok) {
+    const e = new Error(data.error || "Sheets API error");
+    if (data.code) e.code = data.code;
+    if (data.bookingId) e.bookingId = data.bookingId;
+    console.log("SHEETS ERROR RAW:", data); // для дебагу помилок, які приходять з API, щоб бачити код помилки і інші дані
+    throw e;
+  }
   return data.data;
 }
 
