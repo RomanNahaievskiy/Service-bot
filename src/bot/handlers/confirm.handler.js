@@ -23,7 +23,14 @@ export async function confirmHandler(ctx) {
   session.data.chatId ??= String(chatId);
 
   try {
+    console.log("CONFIRM: creating booking", {
+      chatId,
+      tgId,
+      date: session.data.date,
+      time: session.data.time,
+    });
     const booking = await createBooking(session.data);
+    console.log("CONFIRM: booking created", booking?.id);
 
     // ✅ Запланувати нагадування
     try {
@@ -52,6 +59,7 @@ export async function confirmHandler(ctx) {
     return renderStep(ctx, session);
   } catch (err) {
     console.error("❌ createBooking failed", err);
+    console.error("CONFIRM: createBooking failed", err?.message, err);
 
     session.data.confirmError = String(err?.message || err);
 
