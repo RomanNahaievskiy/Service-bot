@@ -25,7 +25,7 @@ export async function confirmHandler(ctx) {
   try {
     console.log("CONFIRM: creating booking", {
       chatId,
-      tgId,
+      tgId: session.data.tgId,
       date: session.data.date,
       time: session.data.time,
     });
