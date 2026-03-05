@@ -55,8 +55,8 @@ export async function renderConfirm(ctx, session) {
       `Р/Н: ${session.data.vehicleNumber || "—"}\n` +
       `Дата: ${formatDate(session.data.date)}\n` +
       `Час: ${session.data.time}\n` +
-      extra +
-      errBlock,
+      extra,
+
     Markup.inlineKeyboard([
       [Markup.button.callback("✅ Підтвердити", "CONFIRM")],
       [Markup.button.callback("⬅️ Назад", "BACK")],
