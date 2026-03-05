@@ -42,7 +42,7 @@ export async function renderConfirm(ctx, session) {
   }
 
   const errBlock = err
-    ? `\n\n❌ Помилка: ${err}\nСпробуйте ще раз або поверніться назад.`
+    ? `\n\n❌ Помилка: ${err}\nОт халепа! Цей час вже хтось бронює...\n Оберіть інший час.`
     : "";
 
   return safeEditOrReply(
