@@ -62,7 +62,7 @@ export async function confirmHandler(ctx) {
     console.error("CONFIRM: createBooking failed", err?.message, err.code);
 
     session.data.confirmError = String(err?.message || err);
-    session.data.confirmError.code = String(err?.code || "unknown");
+
     if (err.code === "SLOT_CONFLICT") {
       session.data.confirmError = "Цей час вже хтось бронює...";
       goToStep(session, STEPS.TIME); // повертаємо на вибір часу, щоб користувач міг обрати інший час
