@@ -3,6 +3,7 @@ import { STEPS } from "../../core/fsm/steps.js";
 import { vehicleDataHandler } from "./vehicleData.handler.js";
 import { phoneTextHandler } from "./phoneText.handler.js";
 import { contractNoHandler } from "./contractNo.handler.js";
+import { contractVehicleHandler } from "./contractVehicle.handler.js";
 
 export async function textDispatcher(ctx, next) {
   const chatId = ctx.chat?.id;
