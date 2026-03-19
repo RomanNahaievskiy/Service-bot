@@ -61,7 +61,7 @@ export async function contractVehicleHandler(ctx) {
     : [];
 
   // test
-  console.log("ContractVehicle handler - vehicles from session:", vehicles);
+  //   console.log("ContractVehicle handler - vehicles from session:", vehicles);
 
   const v =
     vehicles.find(
@@ -88,8 +88,7 @@ export async function contractVehicleHandler(ctx) {
   session.data.vehicleType =
     v.vehicleType ?? v.type ?? session.data.vehicleType ?? null;
   session.data.contractVehicle = v;
-  session.data.vehicleAlias =
-    v.vehicleAlias || "не знайдено в даних аліаса" || null;
+  session.data.vehicleAlias = v.alias || "не знайдено в даних аліаса" || null;
   goToStep(session, STEPS.OPTIONS);
   return renderStep(ctx, session);
 }
