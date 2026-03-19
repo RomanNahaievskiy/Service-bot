@@ -142,6 +142,7 @@ export async function renderOptions(ctx, session) {
   return safeEditOrReply(
     ctx,
     `➕ Додаткові послуги\n\n` +
+      `${isContract ? "Транспортний засіб: " + session.data.vehicleAlias + ". Тип: " + session.data.vehicleTitle + "\n" : ""}` +
       `${isContract ? "💰 Вартість згідно умов договору " : `💰 Поточна вартість: ${summary.totalPrice} грн\n`} ` +
       `⏱ Тривалість: ${summary.totalDurationMin} хв\n
       ${
