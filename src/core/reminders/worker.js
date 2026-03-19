@@ -1,15 +1,16 @@
 import { sheetsApi } from "../../integrations/sheetsApi.js";
+import { formatHumanDateFull } from "../../utils/helpers.js";
 
 function reminderText(type, b) {
   const time = b.startsAt; // можна покращити форматуванням дати/часу, але для прикладу так зійде
-  const svc = b.serviceTitle ? `\nПослуга: ${b.serviceTitle}` : ""; // не має ( має бути) синтаксична помилка.
-  const car = b.vehicleNumber ? `\nАвто: ${b.vehicleNumber}` : ""; // ... і тут теж
+  const svc = b.serviceTitle ? `\nПослуга: ${b.serviceTitle}` : ""; //
+  const car = b.vehicleNumber ? `\nАвто: ${b.vehicleNumber}` : ""; //
 
   if (type === "T24H")
-    return `⏰ Нагадування: завтра мийка о ${time}.${svc}${car}`;
+    return `⏰ Нагадування: завтра мийка  ${formatHumanDateFull(time)}.${svc}${car}`;
   if (type === "T2H")
-    return `🚿 Нагадування: сьогодні мийка о ${time} (через 2 год).${svc}${car}`;
-  return `✅ Через 15 хв ваш час: ${time}.${svc}${car}`;
+    return `🚿 Нагадування: сьогодні мийка  ${formatHumanDateFull(time)} (через 2 год).${svc}${car}`;
+  return `✅ Через 15 хв ваш час: ${formatHumanDateFull(time)}.${svc}${car}`;
 }
 
 export function startRemindersWorker(bot) {

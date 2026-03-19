@@ -68,3 +68,18 @@ export function toKyivISO(date) {
 
   return `${y}-${m}-${d}T${h}:${min}:${s}${sign}${oh}:${om}`;
 }
+
+// Форматування дати для людини, наприклад: "завтра о 15:00"
+export function formatHumanDateFull(isoString) {
+  const date = new Date(isoString);
+
+  if (isNaN(date.getTime())) return "Некоректна дата";
+
+  return new Intl.DateTimeFormat("uk-UA", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}

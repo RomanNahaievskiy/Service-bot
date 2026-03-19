@@ -106,5 +106,20 @@ export async function renderDone(ctx, session) {
   );
 
   // прибрати стару reply-клавіатуру (контакт)
-  return ctx.reply("... додамо тут геолокацію ");
+  await ctx.reply("📍 Локація нашого сервісу:");
+  await ctx.replyWithLocation(49.41802286698074, 27.06679415590703);
+
+  await ctx.reply("Або відкрийте маршрут у Google Maps:", {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "Прокласти маршрут",
+            url: "https://maps.google.com/?q=49.41802286698074,27.06679415590703",
+          },
+        ],
+      ],
+    },
+  });
+  // return ctx.reply("... додамо тут геолокацію ");
 }
