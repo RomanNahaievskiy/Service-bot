@@ -60,6 +60,9 @@ export async function contractVehicleHandler(ctx) {
     ? session.data.contractVehicles
     : [];
 
+  // test
+  console.log("ContractVehicle handler - vehicles from session:", vehicles);
+
   const v =
     vehicles.find(
       (x) => normalizePlate(getVehicleNumber(x)) === normalizedInput,
