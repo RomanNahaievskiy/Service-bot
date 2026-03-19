@@ -37,7 +37,7 @@ export function registerRoutes(bot) {
   // FORWARD FLOW
   bot.action(/^SERVICE_/, serviceHandler); // SERVICE_WASH, SERVICE_REPAIR...
 
-  bot.action(/^CVN_/, contractVehicleSelectHandler);
+  bot.action(/^CVN_/, contractVehicleSelectHandler); //залишити  поки
 
   bot.action(/^GROUP_/, vehicleGroupHandler); // GROUP_PASSENGER / GROUP_CARGO / GROUP_TANKER / GROUP_OTHER
   bot.action(/^VEH_/, vehicleTypeHandler); // VEH_micro_18, VEH_bus_30...

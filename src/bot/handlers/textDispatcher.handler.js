@@ -12,6 +12,9 @@ export async function textDispatcher(ctx, next) {
     case STEPS.CONTRACT_NO:
       return contractNoHandler(ctx);
 
+    case STEPS.CONTRACT_VEHICLE:
+      return contractVehicleHandler(ctx);
+
     case STEPS.VEHICLE_DATA:
       return vehicleDataHandler(ctx);
 

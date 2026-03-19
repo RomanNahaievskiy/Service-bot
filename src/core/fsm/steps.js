@@ -2,7 +2,8 @@ export const STEPS = {
   START: "START",
   HOME: "HOME",
   SERVICE: "SERVICE",
-  CONTRACT_NO: "CONTRACT_NO", // новий крок для номеру договору
+  CONTRACT_NO: "CONTRACT_NO",
+  CONTRACT_VEHICLE: "CONTRACT_VEHICLE", // новий етап для контракту введення номеру транспорту  а вже потім вибір опцій (бо група підтягнеться із таблиць contractVehicles)
   VEHICLE_GROUP: "VEHICLE_GROUP",
   VEHICLE_TYPE: "VEHICLE_TYPE",
   OPTIONS: "OPTIONS",
