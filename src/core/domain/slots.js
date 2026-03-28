@@ -99,18 +99,34 @@ export async function getFreeDaySlots({
   });
 
   // 2) перетворюємо бронювання в "хвилини дня"
-  const busy = (bookings || [])
+  // const busy = (bookings || [])
+  //   .map((b) => {
+  //     if (!b.startsAt || !b.endsAt) return null;
+  //     const s = new Date(b.startsAt);
+  //     const e = new Date(b.endsAt);
+  //     if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime())) return null;
+  //     return {
+  //       startMin: s.getHours() * 60 + s.getMinutes(),
+  //       endMin: e.getHours() * 60 + e.getMinutes(),
+  //     };
+  //   })
+  //   .filter(Boolean);
+  const bookingBusy = (bookings || [])
     .map((b) => {
       if (!b.startsAt || !b.endsAt) return null;
       const s = new Date(b.startsAt);
       const e = new Date(b.endsAt);
       if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime())) return null;
+
       return {
         startMin: s.getHours() * 60 + s.getMinutes(),
         endMin: e.getHours() * 60 + e.getMinutes(),
       };
     })
     .filter(Boolean);
+
+  const breakBusy = getConfiguredBreaks();
+  const busy = [...bookingBusy, ...breakBusy];
 
   // console.log("DBG dateISO", dateISO, "serviceDuration", serviceDuration);
   // console.log(
@@ -133,4 +149,22 @@ export async function getFreeDaySlots({
     const eMin = timeToMinutes(slot.end);
     return !busy.some((b) => overlaps(sMin, eMin, b.startMin, b.endMin));
   });
+}
+
+function getConfiguredBreaks() {
+  const breaks = Array.isArray(BUSINESS_CONFIG.BREAKS)
+    ? BUSINESS_CONFIG.BREAKS
+    : [];
+
+  return breaks
+    .map((br) => {
+      const startMin = timeToMinutes(br.start);
+      const endMin = timeToMinutes(br.end);
+
+      if (Number.isNaN(startMin) || Number.isNaN(endMin)) return null;
+      if (startMin >= endMin) return null;
+
+      return { startMin, endMin };
+    })
+    .filter(Boolean);
 }

@@ -16,6 +16,7 @@ export const BUSINESS_CONFIG = {
 
   // слоти - тривалості в хвилинах
   SLOT_STEP_MINUTES: toInt(process.env.SLOT_STEP_MINUTES, 15), // інтервал між слотами
+  BREAKS: parseBreaks(process.env.BREAKS), // перерви, наприклад: '[{"start": "12:00", "end": "13:00"}, {"start": "17:00", "end": "17:30"}]'
 
   // ресурси
   PORTAL_WASH_COUNT: toInt(process.env.PORTAL_WASH_COUNT, 2), // кількість портальних мийок
@@ -32,6 +33,26 @@ export const BUSINESS_CONFIG = {
   SECOND_REMINDER_ENABLED: toBool(process.env.SECOND_REMINDER_ENABLED, false),
   SECOND_REMINDER_BEFORE_HOURS: toInt(
     process.env.SECOND_REMINDER_BEFORE_HOURS,
-    2
+    2,
   ),
 };
+
+function parseBreaks(envValue) {
+  if (!envValue) return [];
+
+  try {
+    const parsed = JSON.parse(envValue);
+
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .map((b) => {
+        if (!b?.start || !b?.end) return null;
+        return { start: String(b.start), end: String(b.end) };
+      })
+      .filter(Boolean);
+  } catch (e) {
+    console.warn("❌ Invalid BREAKS in .env");
+    return [];
+  }
+}
