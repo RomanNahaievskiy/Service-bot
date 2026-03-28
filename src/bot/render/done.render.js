@@ -9,14 +9,6 @@ export async function renderDone(ctx, session) {
       : session.data.serviceTitle || "—";
   const optionTitles = session.data.optionTitles || [];
 
-  // якщо ти вже перейшов на prices_get:
-  // const vehicleTitle =
-  // session.data?.prices?.vehicles?.find(
-  //   (v) => v.vehicleId === session.data?.vehicleId,
-  // )?.vehicleTitle ||
-  // (typeof session.data.vehicle === "string"
-  //   ? session.data.vehicle
-  //   : session.data.vehicle?.title || "—");
   const vehicleTitle =
     session.data?.vehicleTitle || // якщо вже є в сесії (може бути встановлено раніше, якщо prices_get не виконувався через контракт), то використовуємо його
     session.data?.prices?.vehicles?.find(
@@ -50,29 +42,6 @@ export async function renderDone(ctx, session) {
       ? `\n\n👤 Контакт: ${fullName ?? "—"}\n📞 Телефон: ${phone ?? "—"}`
       : "";
 
-  // Прибираємо reply-клавіатуру (після контакту), але inline залишаємо
-  // return safeEditOrReply(
-  //   ctx,
-  //   `🎉 Запис створено!\n\n` +
-  //     `Послуга: ${serviceTitle}\n` +
-  //     `Транспорт: ${vehicleTitle}\n` +
-  //     `Номер/опис: ${session.data.vehicleNumber || "—"}\n` +
-  //     `Дата: ${formatDate(session.data.date)}\n` +
-  //     `Час: ${session.data.time}\n` +
-  //     extra +
-  //     contact +
-  //     `\n\n🧾 ID: ${bookingId}\n\n` +
-  //     `📍 Чекаємо на вас у зазначений час.`,
-  //   {
-  //     reply_markup: {
-  //       ...Markup.inlineKeyboard([
-  //         [Markup.button.callback("➕ Новий запис", "START_OVER")],
-  //       ]).reply_markup,
-  //       remove_keyboard: true, // ✅ прибирає кнопки "поділитися контактом"
-  //     },
-  //   }
-  // );
-
   //========================================================================================================================================================
   // Новий варіант без safeEditOrReply — просто нове повідомлення
   const text =
@@ -88,14 +57,9 @@ export async function renderDone(ctx, session) {
     `\n\n🧾 ID: ${bookingId}\n\n` +
     `📍 Чекаємо на вас у зазначений час.`;
 
-  // return ctx.reply(text, {
-  //   reply_markup: {
-  //     ...Markup.inlineKeyboard([
-  //       [Markup.button.callback("➕ Новий запис", "START_OVER")],
-  //     ]).reply_markup,
-  //     remove_keyboard: true,
-  //   },
-  // });
+  const operatorPhone = process.env.OPERATOR_PHONE
+    ? String(process.env.OPERATOR_PHONE)
+    : null;
 
   await ctx.reply(
     text,
@@ -121,5 +85,19 @@ export async function renderDone(ctx, session) {
       ],
     },
   });
-  // return ctx.reply("... додамо тут геолокацію ");
+
+  if (operatorPhone) {
+    await ctx.reply("📞 Якщо потрібно скасувати запис або уточнити деталі:", {
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: `Зателефонувати: ${operatorPhone}`,
+              url: `tel:${operatorPhone}`,
+            },
+          ],
+        ],
+      },
+    });
+  }
 }
