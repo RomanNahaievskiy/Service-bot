@@ -85,19 +85,9 @@ export async function renderDone(ctx, session) {
       ],
     },
   });
-
   if (operatorPhone) {
-    await ctx.reply("📞 Якщо потрібно скасувати запис або уточнити деталі:", {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: `Зателефонувати: ${operatorPhone}`,
-              url: `tel:${operatorPhone}`,
-            },
-          ],
-        ],
-      },
-    });
+    await ctx.reply(
+      `📞 Якщо потрібно скасувати запис або уточнити деталі, зв'яжіться з оператором:\n${operatorPhone}`,
+    );
   }
 }
