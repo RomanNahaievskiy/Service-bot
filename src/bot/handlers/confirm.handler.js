@@ -48,9 +48,9 @@ export async function confirmHandler(ctx) {
     session.data.confirmError = null;
     // ✅ 1) Прибираємо (редагуємо) екран CONFIRM, щоб він не висів
     // Це працює тільки для callback, де є message_id
-    if (ctx.callbackQuery?.message) {
-      await ctx.editMessageText("✅ Дякуємо! Формуємо чек…");
-    }
+    // if (ctx.callbackQuery?.message) {
+    //   await ctx.editMessageText("✅ Дякуємо!");
+    // }
 
     // ✅ 2) Переходимо на DONE і рендеримо чек окремим повідомленням
     goToStep(session, STEPS.DONE);
