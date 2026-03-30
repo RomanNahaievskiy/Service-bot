@@ -79,7 +79,7 @@ export async function renderDone(ctx, session) {
         [
           {
             text: "Прокласти маршрут",
-            url: "https://maps.google.com/?q=49.41802286698074,27.06679415590703",
+            url: "https://maps.google.com/?q=49.41755613249754,27.0657379533254923",
           },
         ],
       ],
@@ -87,7 +87,7 @@ export async function renderDone(ctx, session) {
   });
   if (operatorPhone) {
     await ctx.reply(
-      `📞 Якщо потрібно скасувати запис або уточнити деталі, зв'яжіться з оператором:\n${operatorPhone}`,
+      `📞 Якщо потрібно скорегувати, перенести  або скасувати запис зв'яжіться із адміністратором:\n${operatorPhone}`,
     );
   }
 }
