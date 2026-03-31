@@ -13,6 +13,7 @@
 // }
 
 // bootstrap();
+console.log("🚀 MY APP STARTED");
 
 import express from "express";
 import path from "path";
