@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Табло мийки — timeline</title>
+  <style>
+    :root {
+      --klr-red: #cf2f2a;
+      --bg: #f5f6f8;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --ok: #0f9d58;
+      --warn: #f59e0b;
+      --work: #2563eb;
+      --gap: #10b981;
+      --shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; padding-top:120px; font-family: Inter, Arial, sans-serif; background: var(--bg); color: var(--text); }
+    .page { max-width: 760px; margin: 0 auto; padding: 14px; }
+    
+    .header { position: fixed; box-shadow: 0px 12px 50px 3px rgba(17, 24, 39, 0.1); top: 8px; left: 8px; right: 8px; background: var(--klr-red); color: #fff; border-radius: var(--radius); padding: 16px;  z-index: 100;}
+    .header__row { display: flex; justify-content: space-between; align-items: center; }
+    .title { margin: 0; font-size: 22px; font-weight: 800; }
+    .clock { font-size: 20px; font-weight: 800; }
+
+    .section { margin-top: 16px; }
+    .section__title { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+
+    .timeline { display: grid; gap: 10px; }
+
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); }
+
+    .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .time { font-size: 18px; font-weight: 900; color: var(--klr-red);}
+
+    .badge { padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+    .b-new { background: #fef3c7; color: #92400e; }
+    .b-work { background: #dbeafe; color: #1d4ed8; }
+
+    .vehicle-row {display: flex; justify-content: space-between; align-items: center;}
+    .plate { flex: 0 0 20%; padding:2px 5px; font-size: 20px; font-weight: 900;  text-transform: uppercase; border-radius: var(--radius); border: 1px solid #2563eb;}
+    .vehicle { flex: 0 0 30%; font-size: 13px; color: var(--muted); }
+    .service { margin-top: 4px; font-weight: 700; display: none;}
+
+    .meta { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { background: #f3f4f6; border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; font-size: 11px; font-weight: 700; }
+
+    .client { margin-top: 6px; font-size: 12px; font-weight: 700; color: var(--klr-red); }
+
+    .gap {
+      /* border: 1px solid var(--gap); */
+      border-radius: var(--radius);
+      padding: 10px;
+      text-align: center;
+      font-weight: 800;
+      box-shadow: var(--shadow);
+      color: var(--gap);
+      background: linear-gradient(90deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.2) 50%, rgba(16,185,129,0.1) 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .gap__deadline {
+      font-size: 12px;
+      font-weight: 700;
+      color: #065f46;
+    }
+
+    @media (max-width: 560px) {
+      .header__row { flex-direction: column; align-items: flex-start; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="header__row">
+        <h1 class="title">Табло KLR Wash</h1>
+        <div>
+          <div class="clock" id="clock"></div>
+          <div style="font-size:12px;opacity:.9">Всього записів: <strong id="totalCount"></strong></div>
+          <div style="font-size:12px;opacity:.9">У черзі: <strong id="queueCount"></strong></div>
+        </div>
+      </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="section__title">Стрічка дня</div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+  </main>
+
+  <script>
+    const optionMap = {
+      interior_small_18: "Салон",
+      interior_double_bus: "Салон",
+      undercarriage: "Ходова",
+      trailer: "Причіп",
+      tanks_c: "Цистерна"
+    };
+
+    const timeline = [
+      {
+        type: "booking",
+        time: "08:00–09:00",
+        status: "new",
+        plate: "Ав2133КР",
+        vehicle: "Автобус 2-поверховий",
+        service: "Мийка",
+        options: ["Прибирання салону", "Причіп"],
+        client: "Роздріб"
+      },
+      {
+        type: "booking",
+        time: "09:00–09:30",
+        status: "new",
+        plate: "1111",
+        vehicle: "Автобус 1-поверховий",
+        service: "Мийка",
+        options: ["Прибирання салону"],
+        client: "Роздріб"
+      },
+      {
+        type: "gap",
+        label: "Вільно 15 хв",
+        deadline: "до 09:45"
+      },
+      {
+        type: "booking",
+        time: "09:45–10:30",
+        status: "new",
+        plate: "6565656",
+        vehicle: "Автобус 2-поверховий",
+        service: "Мийка",
+        options: ["Прибирання салону"],
+        client: "Роздріб"
+      },
+      {
+        type: "gap",
+        label: "Вільно 30 хв",
+        deadline: "до 11:00"
+      },
+      {
+        type: "booking",
+        time: "11:00–11:30",
+        status: "new",
+        plate: "МП5008ДВ",
+        vehicle: "Тягач з напівпричепом",
+        service: "🚿 Мийка зовнішня",
+        options: ["Мийка днища", "Цистерна"],
+        client: "Контракт №101"
+      },
+      {
+        type: "gap",
+        label: "Вільно 1 год 30 хв",
+        deadline: "до 13:00"
+      },
+      {
+        type: "booking",
+        time: "13:00–13:45",
+        status: "new",
+        plate: "2347",
+        vehicle: "Автобус 2-поверховий",
+        service: "Мийка",
+        options: ["Прибирання салону"],
+        client: "Роздріб"
+      }
+    ];
+
+    function render() {
+      const bookingsCount = timeline.filter(i => i.type === "booking").length;
+      document.getElementById("totalCount").textContent = bookingsCount;
+      const root = document.getElementById("timeline");
+      root.innerHTML = timeline.map(item => {
+        if (item.type === "gap") {
+          return `<div class="gap">
+            <div>${item.label}</div>
+            <div class="gap__deadline">${item.deadline || ""}</div>
+          </div>`;
+        }
+
+        return `
+          <div class="card">
+            <div class="top">
+              <div class="time">${item.time}</div>
+              <div class="badge ${item.status === "new" ? "b-new" : "b-work"}">
+                ${item.status === "new" ? "Новий" : "В роботі"}
+              </div>
+            </div>
+            <div class="vehicle-row">
+              <span class="plate">${item.plate}</span>
+              <span class="vehicle">${item.vehicle}</span>
+            </div>
+            <div class="service">${item.service}</div>
+            <div class="meta">
+              ${item.options.map(o => `<span class="chip">${o}</span>`).join("")}
+            </div>
+            <div class="client">${item.client}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    render();
+    updateClock();
+    setInterval(updateClock, 30000);
+  </script>
+</body>
+</html>
