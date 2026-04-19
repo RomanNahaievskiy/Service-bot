@@ -92,7 +92,7 @@ export const sheetsApi = {
     callSheetsGet("contract_vehicles_get", { contractNo: String(contractNo) }),
   // Пошук контрактту по номеру ТЗ
   botContractVehicleResolve: ({ vehicleNumber }) =>
-    callSheetsPost("bot_contract_vehicle_resolve", {
+    callSheets("bot_contract_vehicle_resolve", {
       vehicleNumber: String(vehicleNumber),
     }),
   // pricing для договору (base + options + totals)
