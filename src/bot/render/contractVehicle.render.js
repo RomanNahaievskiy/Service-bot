@@ -5,11 +5,11 @@ export function renderContractVehicle(ctx, session) {
   console.log("Rendering CONTRACT_VEHICLE step");
 
   const err = session.data.contractVehicleError;
-  const contractNo = session.data.contractNo;
+  // const contractNo = session.data.contractNo;
 
   const text = err
     ? `❌ ${err}\n\nВведіть Р/Н транспортного засобу ще раз 👇`
-    : `Договір: ${contractNo}\n\nВведіть Р/Н транспортного засобу 👇`;
+    : `\nВведіть Р/Н транспортного засобу 👇`;
 
   return safeEditOrReply(
     ctx,

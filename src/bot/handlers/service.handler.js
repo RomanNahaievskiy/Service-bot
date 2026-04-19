@@ -51,17 +51,40 @@ export async function serviceHandler(ctx) {
   }
   // 2️⃣ змінюємо стан з допомогою transition
   // спеціальна логіка для типу клієнта
+  // if (service.id === "wash_contract") {
+  //   //session.data.prices = []; // очищаємо прайс чи краще оновити? , бо для контракту будуть другі ціни
+  //   // session.data.prices = await sheetsApi.contractPricingGet(); // оновлюємо прайс для контракту (якщо він відрізняється від рітейлу)
+  //   session.data.clientType = "contract";
+  //   goToStep(session, STEPS.CONTRACT_NO);
+  // } else {
+  //   session.data.clientType = "retail";
+  //   session.data.contractNo = ""; // явно вказуємо порожній рядок, щоб не було undefined
+  //   goToStep(session, STEPS.VEHICLE_GROUP);
+  // }
+
   if (service.id === "wash_contract") {
-    //session.data.prices = []; // очищаємо прайс чи краще оновити? , бо для контракту будуть другі ціни
-    // session.data.prices = await sheetsApi.contractPricingGet(); // оновлюємо прайс для контракту (якщо він відрізняється від рітейлу)
     session.data.clientType = "contract";
-    goToStep(session, STEPS.CONTRACT_NO);
+
+    // очищаємо контрактний контекст перед новим пошуком
+    session.data.contractNo = "";
+    session.data.contractNoError = null;
+    session.data.contractVehicleError = null;
+    session.data.contractVehicles = [];
+    session.data.contractVehicle = null;
+
+    session.data.vehicleId = null;
+    session.data.vehicleGroup = null;
+    session.data.vehicleType = null;
+    session.data.vehicleNumber = null;
+    session.data.vehicleTitle = null;
+    session.data.vehicleAlias = null;
+
+    goToStep(session, STEPS.CONTRACT_VEHICLE);
   } else {
     session.data.clientType = "retail";
-    session.data.contractNo = ""; // явно вказуємо порожній рядок, щоб не було undefined
+    session.data.contractNo = "";
     goToStep(session, STEPS.VEHICLE_GROUP);
   }
-
   await ctx.answerCbQuery();
 
   // 3️⃣ універсальний рендер

@@ -90,7 +90,11 @@ export const sheetsApi = {
   // Отримати список транспортних засобів за номером договору
   contractVehiclesGet: ({ contractNo }) =>
     callSheetsGet("contract_vehicles_get", { contractNo: String(contractNo) }),
-
+  // Пошук контрактту по номеру ТЗ
+  botContractVehicleResolve: ({ vehicleNumber }) =>
+    callSheetsPost("bot_contract_vehicle_resolve", {
+      vehicleNumber: String(vehicleNumber),
+    }),
   // pricing для договору (base + options + totals)
   contractPricingGet: ({ contractNo, vehicleId, serviceId, optionIds }) =>
     callSheetsGet("contract_pricing_get", {

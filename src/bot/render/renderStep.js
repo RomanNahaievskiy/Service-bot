@@ -2,7 +2,7 @@ import { STEPS } from "../../core/fsm/steps.js";
 
 import { renderStart } from "./start.render.js"; //+
 import { renderService } from "./service.render.js"; //+
-import { renderContractNo } from "./contractNo.render.js"; //+
+// import { renderContractNo } from "./contractNo.render.js"; //+
 import { renderContractVehicle } from "./contractVehicle.render.js";
 import { renderVehicleGroup } from "./vehicleGroup.render.js"; //+
 import { renderVehicleType } from "./vehicleType.render.js"; //+
@@ -26,8 +26,8 @@ export async function renderStep(ctx, session) {
     case STEPS.SERVICE:
       return renderService(ctx, session);
 
-    case STEPS.CONTRACT_NO:
-      return renderContractNo(ctx, session);
+    // case STEPS.CONTRACT_NO:
+    //   return renderContractNo(ctx, session);
 
     case STEPS.CONTRACT_VEHICLE:
       return renderContractVehicle(ctx, session);
