@@ -61,13 +61,7 @@ export async function renderDone(ctx, session) {
     ? String(process.env.OPERATOR_PHONE)
     : null;
 
-  await ctx.reply(
-    text,
-    // Markup.inlineKeyboard([
-    //   [Markup.button.callback("➕ Новий запис", "START_OVER")],
-    // ])
-    Markup.keyboard([["Записатися на мийку"]]).resize(),
-  );
+  await ctx.reply(text, Markup.keyboard([["Записатися на мийку"]]).resize());
 
   // прибрати стару reply-клавіатуру (контакт)
   await ctx.reply("📍 Локація нашого сервісу:");
