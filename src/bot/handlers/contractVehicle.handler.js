@@ -157,6 +157,10 @@ export async function contractVehicleHandler(ctx) {
     const v = await sheetsApi.botContractVehicleResolve({
       vehicleNumber: normalizedInput,
     });
+    сonsole.log(
+      "ContractVehicle handler - resolved vehicle from Sheets API:",
+      v,
+    );
 
     if (!v) {
       session.data.contractVehicleError = `Транспортний засіб з номером "${rawInput}" не знайдено.`;
