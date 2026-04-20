@@ -157,7 +157,10 @@ export async function contractVehicleHandler(ctx) {
     const v = await sheetsApi.botContractVehicleResolve({
       vehicleNumber: normalizedInput,
     });
-    сonsole.log(
+    console.log("payload :", {
+      vehicleNumber: normalizedInput,
+    });
+    console.log(
       "ContractVehicle handler - resolved vehicle from Sheets API:",
       v,
     );
