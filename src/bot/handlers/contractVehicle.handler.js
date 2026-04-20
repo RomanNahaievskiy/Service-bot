@@ -154,16 +154,13 @@ export async function contractVehicleHandler(ctx) {
   const normalizedInput = normalizePlate(rawInput);
 
   try {
-    const v = await sheetsApi.botContractVehicleResolve({
-      vehicleNumber: normalizedInput,
-    });
     console.log("payload :", {
       vehicleNumber: normalizedInput,
     });
-    console.log(
-      "ContractVehicle handler - resolved vehicle from Sheets API:",
-      v,
-    );
+
+    const v = await sheetsApi.botContractVehicleResolve({
+      vehicleNumber: normalizedInput,
+    });
 
     if (!v) {
       session.data.contractVehicleError = `Транспортний засіб з номером "${rawInput}" не знайдено.`;
