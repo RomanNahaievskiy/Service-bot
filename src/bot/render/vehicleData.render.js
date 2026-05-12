@@ -61,10 +61,7 @@ export async function renderVehicleData(ctx, session) {
 
     return safeEditOrReply(
       ctx,
-      `📝 Введіть реєстраційний номер транспорту 👇\n\n` +
-        `Обрано: ${vehicleTitle}\n` +
-        extra +
-        `Наприклад: *ВС1234АА* `,
+      `Введіть реєстраційний номер транспорту\n\n` + `Наприклад: *ВС1234АА* `,
       Markup.inlineKeyboard([
         [Markup.button.callback("⬅️ Назад", "BACK")],
         [Markup.button.callback("↩️ На початок", "START_OVER")],

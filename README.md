@@ -375,3 +375,5 @@ phone, fullName, vehicleNumber
 Крок 5. Навігація: BACK + nav stack (snapshot data)
 Крок 6. Slots: генерувати по totalDurationMin + free filter
 Крок 7. Confirm: показати breakdown (опції, ціна, тривалість) + createBooking
+
+для розгортань на сервері https://pm2.keymetrics.io/docs/usage/process-management/
