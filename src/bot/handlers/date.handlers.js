@@ -30,7 +30,7 @@ export async function datePickHandler(ctx) {
     0,
     0,
     0,
-    0
+    0,
   );
   session.data.date = date;
 
