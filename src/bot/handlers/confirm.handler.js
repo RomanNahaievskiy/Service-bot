@@ -23,6 +23,13 @@ export async function confirmHandler(ctx) {
   session.data.chatId ??= String(chatId);
 
   try {
+    const promoOk = await validatePromoBeforeBooking(session);
+    if (!promoOk.ok) {
+      session.data.confirmError = promoConfirmErrorMessage(promoOk.reason);
+      await ctx.answerCbQuery(session.data.confirmError, { show_alert: true });
+      return renderStep(ctx, session);
+    }
+
     console.log("CONFIRM: creating booking", {
       chatId,
       tgId: session.data.tgId,
@@ -85,6 +92,37 @@ export async function confirmHandler(ctx) {
   }
 }
 
+async function validatePromoBeforeBooking(session) {
+  const promo = session.data?.promo;
+  const pricing = session.data?.pricing;
+  const promoPricing = pricing?.promo;
+
+  if (!promo?.valid || !promo.promoSessionId || !promoPricing?.promoId) {
+    return { ok: true };
+  }
+
+  try {
+    const result = await sheetsApi.promoValidate({
+      promoSessionId: promo.promoSessionId,
+      linkToken: promo.linkToken,
+      enteredCode: promo.enteredCode || promo.code || promoPricing.code,
+      tgId: session.data?.tgId || "",
+      chatId: session.data?.chatId || "",
+      serviceId: session.data?.serviceId || "wash",
+      clientType: session.data?.clientType || "retail",
+    });
+
+    if (!result?.valid) {
+      return { ok: false, reason: result?.reason || "invalid_code" };
+    }
+
+    return { ok: true };
+  } catch (e) {
+    console.warn("promoValidate before booking failed:", e?.message || e);
+    return { ok: false, reason: "validation_failed" };
+  }
+}
+
 async function consumePromoForBooking(session, booking) {
   const promo = session.data?.promo;
   const pricing = session.data?.pricing;
@@ -117,5 +155,22 @@ async function consumePromoForBooking(session, booking) {
     };
   } catch (e) {
     console.warn("promoConsume failed:", e?.message || e);
+  }
+}
+
+function promoConfirmErrorMessage(reason) {
+  switch (reason) {
+    case "exhausted":
+      return "Ліміт використань цього промокоду вже вичерпано.";
+    case "already_used_by_client":
+      return "Ви вже скористалися цим промокодом.";
+    case "expired":
+      return "Термін дії цього промокоду вже завершився.";
+    case "not_started":
+      return "Ця акційна пропозиція ще не активна.";
+    case "validation_failed":
+      return "Не вдалося повторно перевірити промокод. Спробуйте ще раз.";
+    default:
+      return "Промокод уже недійсний. Перевірте код або почніть запис заново.";
   }
 }
