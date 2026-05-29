@@ -31,6 +31,7 @@ export async function confirmHandler(ctx) {
     });
     const booking = await createBooking(session.data); // throws e
     console.log("CONFIRM: booking created", booking?.id);
+    await consumePromoForBooking(session, booking);
 
     // ✅ Запланувати нагадування
     try {
@@ -81,5 +82,40 @@ export async function confirmHandler(ctx) {
       show_alert: true,
     });
     return renderStep(ctx, session); // після setStep(session, STEPS.TIME);  має рендерити екран вибору часу з помилкою session.data.confirmError
+  }
+}
+
+async function consumePromoForBooking(session, booking) {
+  const promo = session.data?.promo;
+  const pricing = session.data?.pricing;
+  const promoPricing = pricing?.promo;
+
+  if (!promo?.valid || !promo.promoSessionId || !promoPricing?.promoId) return;
+
+  try {
+    const result = await sheetsApi.promoConsume({
+      promoSessionId: promo.promoSessionId,
+      promoId: promoPricing.promoId,
+      bookingId: booking?.id || session.data?.id || "",
+      tgId: session.data?.tgId || "",
+      serviceId: session.data?.serviceId || "wash",
+      clientType: session.data?.clientType || "retail",
+      originalPrice: pricing?.originalTotalPrice ?? pricing?.totalPrice ?? "",
+      discountAmount: pricing?.discountAmount ?? "",
+      finalPrice: pricing?.totalPrice ?? "",
+    });
+
+    if (!result?.consumed) {
+      console.warn("promoConsume skipped:", result?.reason || result);
+      return;
+    }
+
+    session.data.promo = {
+      ...promo,
+      status: "booking_created",
+      usedCount: result.usedCount,
+    };
+  } catch (e) {
+    console.warn("promoConsume failed:", e?.message || e);
   }
 }

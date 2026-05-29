@@ -43,6 +43,10 @@ export async function createBooking(data) {
         .filter(Boolean);
 
   const totalPrice = Number(data?.pricing?.totalPrice ?? data?.totalPrice ?? 0);
+  const originalPrice = Number(data?.pricing?.originalTotalPrice ?? totalPrice);
+  const discountAmount = Number(data?.pricing?.discountAmount ?? 0);
+  const promoPricing = data?.pricing?.promo || {};
+  const promo = data?.promo || {};
 
   // Формуємо корисне навантаження для Sheets API відповідно до контракту(схеми) в Sheets API
   const payload = {
@@ -90,6 +94,21 @@ export async function createBooking(data) {
     optionIds: optionIdsArr.join(","),
     totalPrice: Number.isFinite(totalPrice) ? totalPrice : 0,
     totalDurationMin: safeDuration,
+    originalPrice: Number.isFinite(originalPrice) ? originalPrice : 0,
+    discountAmount: Number.isFinite(discountAmount) ? discountAmount : 0,
+    promoFinalPrice: Number.isFinite(totalPrice) ? totalPrice : 0,
+    promoId: String(promoPricing.promoId || promo.promoId || ""),
+    promoCode: String(
+      promoPricing.code || promo.code || promo.enteredCode || "",
+    ),
+    promoTag: String(promoPricing.tag || promo.tag || ""),
+    promoDiscountType: String(
+      promoPricing.discountType || promo.discountType || "",
+    ),
+    promoDiscountValue: String(
+      promoPricing.discountValue ?? promo.discountValue ?? "",
+    ),
+    promoSessionId: String(promo.promoSessionId || ""),
 
     // службове
     comment: String(data.comment || ""),
