@@ -128,4 +128,10 @@ export const sheetsApi = {
   remindersCancelByBooking: ({ bookingId }) =>
     callSheets("reminders_cancel_by_booking", { bookingId }),
   remindersTickLock: () => callSheets("reminders_tick_lock", {}),
+
+  // ===== Promo =====
+  promoSessionUpsert: (payload) => callSheets("promo_session_upsert", payload),
+  promoSessionUpdate: (payload) => callSheets("promo_session_update", payload),
+  promoValidate: (payload) => callSheets("promo_validate", payload),
+  promoConsume: (payload) => callSheets("promo_consume", payload),
 };
