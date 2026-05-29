@@ -75,6 +75,8 @@ function promoReasonMessage(reason) {
       return "Термін дії цього промокоду вже завершився.";
     case "exhausted":
       return "Ліміт використань цього промокоду вже вичерпано.";
+    case "already_used_by_client":
+      return "Ви вже скористалися цим промокодом.";
     case "not_applicable_service":
     case "not_applicable_client_type":
       return "Цей промокод не застосовується до обраної послуги.";
