@@ -123,6 +123,9 @@ function getPromoEligibleAmount(pricing, promo) {
   if (!applicableOptions || applicableOptions.toLowerCase() === "all") {
     return money(pricing.originalTotalPrice || pricing.totalPrice || 0);
   }
+  if (applicableOptions.toLowerCase() === "none") {
+    return money(pricing.basePrice || 0);
+  }
 
   const allowed = new Set(
     applicableOptions
