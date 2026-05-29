@@ -2,6 +2,7 @@ import { getSession } from "../../utils/helpers.js";
 import { STEPS } from "../../core/fsm/steps.js";
 import { vehicleDataHandler } from "./vehicleData.handler.js";
 import { phoneTextHandler } from "./phoneText.handler.js";
+import { promoCodeHandler } from "./promoCode.handler.js";
 // import { contractNoHandler } from "./contractNo.handler.js";
 // import { contractVehicleHandler } from "./contractVehicle.handler.js";
 
@@ -35,6 +36,9 @@ export async function textDispatcher(ctx, next) {
   const session = getSession(chatId);
 
   switch (session.step) {
+    case STEPS.PROMO_CODE:
+      return promoCodeHandler(ctx);
+
     case STEPS.CONTRACT_VEHICLE:
       return contractVehicleHandler(ctx);
 

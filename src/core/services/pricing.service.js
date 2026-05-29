@@ -58,3 +58,122 @@ export async function calcPricing({ vehicleId, group, optionIds = [] }) {
     totalDurationMin,
   };
 }
+
+export async function calcPricingWithPromo({
+  vehicleId,
+  group,
+  optionIds = [],
+  promo = null,
+  serviceId = "wash",
+  clientType = "retail",
+}) {
+  const pricing = await calcPricing({ vehicleId, group, optionIds });
+  return applyPromoDiscount(pricing, {
+    promo,
+    serviceId,
+    clientType,
+  });
+}
+
+export function applyPromoDiscount(
+  pricing,
+  { promo = null, serviceId = "wash", clientType = "retail" } = {},
+) {
+  const originalTotalPrice = money(pricing?.totalPrice || 0);
+  const base = {
+    ...pricing,
+    originalTotalPrice,
+    discountAmount: 0,
+    totalPrice: originalTotalPrice,
+  };
+
+  if (!promo?.valid) return base;
+  if (String(clientType || "").toLowerCase() !== "retail") return base;
+  if (!csvIncludes(promo.applicableServices || "all", serviceId)) return base;
+
+  const eligibleAmount = getPromoEligibleAmount(base, promo);
+  if (eligibleAmount <= 0) {
+    return {
+      ...base,
+      promo: buildPromoPricingMeta(promo, "not_applicable_options"),
+    };
+  }
+
+  const discountAmount = money(
+    calcDiscountAmount({
+      amount: eligibleAmount,
+      discountType: promo.discountType,
+      discountValue: promo.discountValue,
+    }),
+  );
+
+  const safeDiscount = Math.min(discountAmount, originalTotalPrice);
+  const totalPrice = money(originalTotalPrice - safeDiscount);
+
+  return {
+    ...base,
+    discountAmount: safeDiscount,
+    totalPrice,
+    promo: buildPromoPricingMeta(promo, "applied"),
+  };
+}
+
+function getPromoEligibleAmount(pricing, promo) {
+  const applicableOptions = String(promo.applicableOptions || "all").trim();
+  if (!applicableOptions || applicableOptions.toLowerCase() === "all") {
+    return money(pricing.originalTotalPrice || pricing.totalPrice || 0);
+  }
+
+  const allowed = new Set(
+    applicableOptions
+      .split(",")
+      .map((x) => x.trim())
+      .filter(Boolean),
+  );
+
+  return money(
+    (pricing.selectedOptions || [])
+      .filter((o) => allowed.has(String(o.optionId)))
+      .reduce((sum, o) => sum + Number(o.price || 0), 0),
+  );
+}
+
+function calcDiscountAmount({ amount, discountType, discountValue }) {
+  const type = String(discountType || "").toLowerCase();
+  const value = Number(discountValue || 0);
+
+  if (!Number.isFinite(value) || value <= 0) return 0;
+
+  if (type === "percent") return amount * (value / 100);
+  if (type === "fixed") return value;
+  if (type === "coefficient") return amount - amount * value;
+
+  return 0;
+}
+
+function buildPromoPricingMeta(promo, status) {
+  return {
+    promoId: String(promo.promoId || ""),
+    code: String(promo.code || promo.enteredCode || ""),
+    tag: String(promo.tag || ""),
+    discountType: String(promo.discountType || ""),
+    discountValue: Number(promo.discountValue || 0),
+    status,
+  };
+}
+
+function csvIncludes(csv, value) {
+  const raw = String(csv || "all").trim();
+  if (!raw || raw.toLowerCase() === "all") return true;
+
+  return raw
+    .split(",")
+    .map((x) => x.trim().toLowerCase())
+    .includes(String(value || "").toLowerCase());
+}
+
+function money(value) {
+  const n = Number(value || 0);
+  if (!Number.isFinite(n)) return 0;
+  return Math.round(n * 100) / 100;
+}

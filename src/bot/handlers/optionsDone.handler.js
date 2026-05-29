@@ -1,4 +1,7 @@
-import { calcPricing } from "../../core/services/pricing.service.js";
+import {
+  applyPromoDiscount,
+  calcPricing,
+} from "../../core/services/pricing.service.js";
 import { renderStep } from "../render/renderStep.js";
 import { STEPS } from "../../core/fsm/steps.js";
 import { goToStep } from "../../core/fsm/transition.js";
@@ -86,15 +89,24 @@ export async function optionsDoneHandler(ctx) {
       };
     } else {
       const pricing = await calcPricing({ vehicleId, group, optionIds });
+      const finalPricing = applyPromoDiscount(pricing, {
+        promo: session.data.promo,
+        serviceId: session.data.serviceId || "wash",
+        clientType: session.data.clientType || "retail",
+      });
 
       session.data.pricing = {
-        totalPrice: pricing.totalPrice,
-        totalDurationMin: pricing.totalDurationMin,
-        basePrice: pricing.basePrice,
-        baseDurationMin: pricing.baseDurationMin,
-        optionsPrice: pricing.optionsPrice,
-        optionsDurationMin: pricing.optionsDurationMin,
-        selectedOptions: pricing.selectedOptions,
+        totalPrice: finalPricing.totalPrice,
+        totalDurationMin: finalPricing.totalDurationMin,
+        basePrice: finalPricing.basePrice,
+        baseDurationMin: finalPricing.baseDurationMin,
+        optionsPrice: finalPricing.optionsPrice,
+        optionsDurationMin: finalPricing.optionsDurationMin,
+        selectedOptions: finalPricing.selectedOptions,
+        originalTotalPrice: finalPricing.originalTotalPrice,
+        discountAmount: finalPricing.discountAmount,
+        promo: finalPricing.promo,
+        source: "retail",
       };
     }
     await ctx.answerCbQuery("✅ Готово");
