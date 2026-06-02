@@ -1,4 +1,5 @@
 import { STEPS } from "../../core/fsm/steps.js";
+import { sheetsApi } from "../../integrations/sheetsApi.js";
 
 import { renderStart } from "./start.render.js"; //+
 import { renderService } from "./service.render.js"; //+
@@ -16,6 +17,8 @@ import { renderDone } from "./done.render.js"; //+
 import { renderHome } from "./home.render.js"; //+
 
 export async function renderStep(ctx, session) {
+  trackPromoStep(session);
+
   switch (session.step) {
     case STEPS.START:
       return renderStart(ctx, session);
@@ -64,4 +67,24 @@ export async function renderStep(ctx, session) {
       session.step = STEPS.SERVICE;
       return renderService(ctx, session);
   }
+}
+
+function trackPromoStep(session) {
+  const promoSessionId = session.data?.promo?.promoSessionId;
+  if (!promoSessionId) return;
+
+  const pricing = session.data?.pricing || {};
+
+  void sheetsApi
+    .promoSessionUpdate({
+      promoSessionId,
+      lastStep: session.step,
+      phone: session.data?.phone || "",
+      originalPrice: pricing.originalTotalPrice ?? "",
+      discountAmount: pricing.discountAmount ?? "",
+      finalPrice: pricing.totalPrice ?? "",
+    })
+    .catch((e) => {
+      console.warn("promo_session_update step failed:", e?.message || e);
+    });
 }
