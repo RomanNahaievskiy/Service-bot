@@ -65,15 +65,15 @@ export async function renderDone(ctx, session) {
 
   // прибрати стару reply-клавіатуру (контакт)
   await ctx.reply("📍 Локація нашого сервісу:");
-  await ctx.replyWithLocation(49.41802286698074, 27.06679415590703);
-
+  // await ctx.replyWithLocation(49.41802286698074, 27.06679415590703);
+  await ctx.replyWithLocation(49.41674589836418, 27.06821344904274);
   await ctx.reply("Або відкрийте маршрут у Google Maps:", {
     reply_markup: {
       inline_keyboard: [
         [
           {
             text: "Прокласти маршрут",
-            url: "https://maps.google.com/?q=49.41755613249754,27.0657379533254923",
+            url: "https://maps.app.goo.gl/uoVgJ3bfzfXxCrr77?g_st=atm",
           },
         ],
       ],
