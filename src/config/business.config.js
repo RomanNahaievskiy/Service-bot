@@ -1,4 +1,4 @@
-function toInt(value, fallback) {
+﻿function toInt(value, fallback) {
   const n = Number.parseInt(value, 10);
   return Number.isNaN(n) ? fallback : n;
 }
@@ -8,27 +8,20 @@ function toBool(value, fallback = false) {
   return value === "true" || value === true;
 }
 
-// Конфігурація бізнес-логіки
+// РљРѕРЅС„С–РіСѓСЂР°С†С–СЏ Р±С–Р·РЅРµСЃ-Р»РѕРіС–РєРё
 export const BUSINESS_CONFIG = {
   TIME_ZONE:
     process.env.BUSINESS_TIME_ZONE ?? process.env.APP_TIMEZONE ?? "Europe/Kyiv",
 
-  // робочий час
+  // СЂРѕР±РѕС‡РёР№ С‡Р°СЃ
   WORKDAY_START: process.env.WORKDAY_START ?? "08:00",
   WORKDAY_END: process.env.WORKDAY_END ?? "20:00",
 
-  // слоти - тривалості в хвилинах
-  SLOT_STEP_MINUTES: toInt(process.env.SLOT_STEP_MINUTES, 15), // інтервал між слотами
-  BREAKS: parseBreaks(process.env.BREAKS), // перерви, наприклад: '[{"start": "12:00", "end": "13:00"}, {"start": "17:00", "end": "17:30"}]'
+  // СЃР»РѕС‚Рё - С‚СЂРёРІР°Р»РѕСЃС‚С– РІ С…РІРёР»РёРЅР°С…
+  SLOT_STEP_MINUTES: toInt(process.env.SLOT_STEP_MINUTES, 15), // С–РЅС‚РµСЂРІР°Р» РјС–Р¶ СЃР»РѕС‚Р°РјРё
+  BREAKS: parseBreaks(process.env.BREAKS), // РїРµСЂРµСЂРІРё, РЅР°РїСЂРёРєР»Р°Рґ: '[{"start": "12:00", "end": "13:00"}, {"start": "17:00", "end": "17:30"}]'
 
-  // ресурси
-  PORTAL_WASH_COUNT: toInt(process.env.PORTAL_WASH_COUNT, 2), // кількість портальних мийок
-  MANUAL_WASH_COUNT: toInt(process.env.MANUAL_WASH_COUNT, 2), // кількість ручних мийок
-  OIL_CHANGE_BAYS: toInt(process.env.OIL_CHANGE_BAYS, 1), // кількість майданчиків для заміни оливи
-  TIRE_SERVICE_BAYS: toInt(process.env.TIRE_SERVICE_BAYS, 1), // кількість майданчиків для шиномонтажу
-  SERVICE_BOX_COUNT: toInt(process.env.SERVICE_BOX_COUNT, 1), // кількість сервісних боксів
-
-  // нагадування
+  // РЅР°РіР°РґСѓРІР°РЅРЅСЏ
   REMINDER_ENABLED: toBool(process.env.REMINDER_ENABLED, true),
   REMINDER_BEFORE_HOURS: toInt(process.env.REMINDER_BEFORE_HOURS, 24),
   REMINDER_BEFORE_MINUTES: toInt(process.env.REMINDER_BEFORE_MINUTES, 0),
@@ -55,7 +48,8 @@ function parseBreaks(envValue) {
       })
       .filter(Boolean);
   } catch (e) {
-    console.warn("❌ Invalid BREAKS in .env");
+    console.warn("вќЊ Invalid BREAKS in .env");
     return [];
   }
 }
+
