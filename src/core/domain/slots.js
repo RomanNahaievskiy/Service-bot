@@ -1,6 +1,12 @@
 import { BUSINESS_CONFIG } from "../../config/business.config.js";
 import { timeToMinutes, minutesToTime } from "../../utils/dates.js";
 import { sheetsApi } from "../../integrations/sheetsApi.js";
+import {
+  compareYMD,
+  getMinutesOfDayInTimeZone,
+  todayYMD,
+  ymdFromDateLike,
+} from "../../utils/timezone.js";
 
 export function generateDaySlots({
   // генерує всі слоти дня
@@ -13,21 +19,17 @@ export function generateDaySlots({
   const startMinDay = timeToMinutes(BUSINESS_CONFIG.WORKDAY_START);
   const endMinDay = timeToMinutes(BUSINESS_CONFIG.WORKDAY_END);
 
-  const dayKey = (d) => {
-    const x = new Date(d);
-    x.setHours(0, 0, 0, 0);
-    return x.getTime();
-  };
+  const targetDay = ymdFromDateLike(forDate, BUSINESS_CONFIG.TIME_ZONE);
+  const today = todayYMD(BUSINESS_CONFIG.TIME_ZONE, now);
 
-  const targetDay = dayKey(forDate);
-  const today = dayKey(now);
-
-  if (targetDay < today) return [];
+  if (compareYMD(targetDay, today) < 0) return [];
 
   let startMin = startMinDay;
 
   if (targetDay === today) {
-    const nowMinRaw = now.getHours() * 60 + now.getMinutes() + leadTimeMinutes;
+    const nowMinRaw =
+      getMinutesOfDayInTimeZone(now, BUSINESS_CONFIG.TIME_ZONE) +
+      leadTimeMinutes;
     startMin = Math.max(startMinDay, ceilToStep(nowMinRaw, slotStep));
   }
 
@@ -54,11 +56,7 @@ function ceilToStep(value, step) {
 
 function toYYYYMMDD(dateObj) {
   // форматує дату в рядок "YYYY-MM-DD"
-  const d = new Date(dateObj);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+  return ymdFromDateLike(dateObj, BUSINESS_CONFIG.TIME_ZONE);
 }
 
 function overlaps(aStart, aEnd, bStart, bEnd) {
@@ -119,8 +117,8 @@ export async function getFreeDaySlots({
       if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime())) return null;
 
       return {
-        startMin: s.getHours() * 60 + s.getMinutes(),
-        endMin: e.getHours() * 60 + e.getMinutes(),
+        startMin: getMinutesOfDayInTimeZone(s, BUSINESS_CONFIG.TIME_ZONE),
+        endMin: getMinutesOfDayInTimeZone(e, BUSINESS_CONFIG.TIME_ZONE),
       };
     })
     .filter(Boolean);

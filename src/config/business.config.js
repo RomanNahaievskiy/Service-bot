@@ -10,6 +10,9 @@ function toBool(value, fallback = false) {
 
 // Конфігурація бізнес-логіки
 export const BUSINESS_CONFIG = {
+  TIME_ZONE:
+    process.env.BUSINESS_TIME_ZONE ?? process.env.APP_TIMEZONE ?? "Europe/Kyiv",
+
   // робочий час
   WORKDAY_START: process.env.WORKDAY_START ?? "08:00",
   WORKDAY_END: process.env.WORKDAY_END ?? "20:00",

@@ -1,16 +1,20 @@
+import { BUSINESS_CONFIG } from "../../config/business.config.js";
+import {
+  addDaysYMD,
+  parseYMD,
+  todayYMD,
+  ymdFromDateLike,
+} from "../../utils/timezone.js";
+
 export function resolveDateByCallback(callback) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = todayYMD(BUSINESS_CONFIG.TIME_ZONE);
 
   switch (callback) {
     case "DATE_TODAY":
       return today;
 
-    case "DATE_TOMORROW": {
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      return tomorrow;
-    }
+    case "DATE_TOMORROW":
+      return addDaysYMD(today, 1);
 
     default:
       return null;
@@ -18,11 +22,12 @@ export function resolveDateByCallback(callback) {
 }
 
 export function formatDate(date) {
-  return date.toLocaleDateString("uk-UA", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-}
+  const ymd = ymdFromDateLike(date, BUSINESS_CONFIG.TIME_ZONE);
+  const { year, month, day } = parseYMD(ymd);
 
-//Легко розширити (календар, тиждень)
+  return [
+    String(day).padStart(2, "0"),
+    String(month).padStart(2, "0"),
+    year,
+  ].join(".");
+}

@@ -1,25 +1,25 @@
+import { BUSINESS_CONFIG } from "../../config/business.config.js";
 import { sheetsApi } from "../../integrations/sheetsApi.js";
 import { toKyivISO } from "../../utils/helpers.js";
+import {
+  ymdFromDateLike,
+  zonedDateTimeToDate,
+} from "../../utils/timezone.js";
 
 export async function createBooking(data) {
-  const dateObj = data.date; // Очікуємо Date об'єкт
-  if (!(dateObj instanceof Date)) {
-    throw new Error("Invalid date object in session");
-  }
+  const timeHHMM = extractTimeHHMM(data.time);
+  const dateYMD = ymdFromDateLike(data.date, BUSINESS_CONFIG.TIME_ZONE);
 
-  const timeHHMM = extractTimeHHMM(data.time); // TIME_15:45 → 15:45
-
-  // Формуємо start
-  const start = new Date(dateObj);
-  const [hh, mm] = timeHHMM.split(":");
-  start.setHours(Number(hh), Number(mm), 0, 0);
+  const start = zonedDateTimeToDate(
+    dateYMD,
+    timeHHMM,
+    BUSINESS_CONFIG.TIME_ZONE,
+  );
 
   if (Number.isNaN(start.getTime())) {
     throw new Error("Invalid start datetime");
   }
 
-  // ✅ тривалість з послуги
-  // const duration = Number(data.service?.duration ?? 30);
   const duration = Number(
     data?.pricing?.totalDurationMin ??
       data?.service?.durationMin ??
@@ -30,9 +30,7 @@ export async function createBooking(data) {
   const safeDuration =
     Number.isFinite(duration) && duration > 0 ? duration : 30;
 
-  const end = new Date(start);
-  end.setMinutes(end.getMinutes() + safeDuration);
-
+  const end = new Date(start.getTime() + safeDuration * 60000);
   const now = new Date().toISOString();
 
   const optionIdsArr = Array.isArray(data.optionIds)
@@ -48,23 +46,19 @@ export async function createBooking(data) {
   const promoPricing = data?.pricing?.promo || {};
   const promo = data?.promo || {};
 
-  // Формуємо корисне навантаження для Sheets API відповідно до контракту(схеми) в Sheets API
   const payload = {
     id: String(data.id || crypto.randomUUID()),
     createdAt: String(data.createdAt || now),
 
-    // клієнт
-    tgId: String(data.tgId || data.userId || ""), // ✅ tgId користувача
+    tgId: String(data.tgId || data.userId || ""),
     fullName: String(data.fullName || "—"),
     phone: String(data.phone || ""),
 
-    // B2B
     clientType: String(data.clientType || "retail"),
     contractNo: String(
       data.clientType === "contract" ? data.contractNo || "" : "",
     ),
 
-    // послуга/ТЗ
     serviceId: String(
       data.serviceId || data?.service?.serviceId || data?.service?.id || "",
     ),
@@ -86,11 +80,9 @@ export async function createBooking(data) {
     ),
     vehicleNumber: String(data.vehicleNumber || ""),
 
-    // дати
     startsAt: toKyivISO(start),
     endsAt: toKyivISO(end),
 
-    // опції/прайс
     optionIds: optionIdsArr.join(","),
     totalPrice: Number.isFinite(totalPrice) ? totalPrice : 0,
     totalDurationMin: safeDuration,
@@ -110,7 +102,6 @@ export async function createBooking(data) {
     ),
     promoSessionId: String(promo.promoSessionId || ""),
 
-    // службове
     comment: String(data.comment || ""),
     status: String(data.status || "new"),
     admin: String(data.admin || ""),
@@ -123,23 +114,14 @@ export async function createBooking(data) {
 function extractTimeHHMM(time) {
   const s = String(time || "").trim();
 
-  // TIME_19:00 -> 19:00
   let m = s.match(/^TIME_(\d{1,2}):(\d{2})$/);
   if (m) return `${m[1].padStart(2, "0")}:${m[2]}`;
 
-  // 19:00 -> 19:00
   m = s.match(/^(\d{1,2}):(\d{2})$/);
   if (m) return `${m[1].padStart(2, "0")}:${m[2]}`;
 
-  // 19:00:00 -> 19:00
   m = s.match(/^(\d{1,2}):(\d{2}):\d{2}$/);
   if (m) return `${m[1].padStart(2, "0")}:${m[2]}`;
 
   throw new Error(`Invalid time format: ${s}`);
-}
-
-function normalize(v) {
-  if (!v) return "";
-  if (typeof v === "string") return v;
-  return v.title || v.name || "";
 }

@@ -23,15 +23,7 @@ export async function datePickHandler(ctx) {
     return;
   }
 
-  const date = new Date(
-    Number(m[1]),
-    Number(m[2]) - 1,
-    Number(m[3]),
-    0,
-    0,
-    0,
-    0,
-  );
+  const date = `${m[1]}-${m[2]}-${m[3]}`;
   session.data.date = date;
 
   // 🧮 одразу рахуємо слоти

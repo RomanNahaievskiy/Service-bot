@@ -2,6 +2,8 @@ import { STEPS } from "../../core/fsm/steps.js";
 import { getSession } from "../../utils/helpers.js";
 import { renderStep } from "../render/renderStep.js";
 import { getFreeDaySlots } from "../../core/domain/slots.js";
+import { BUSINESS_CONFIG } from "../../config/business.config.js";
+import { ymdFromDateLike } from "../../utils/timezone.js";
 
 function toDate(val) {
   if (!val) return null;
@@ -52,7 +54,12 @@ export async function timeHandler(ctx) {
   }
 
   // Нормалізуємо дату
-  const date = toDate(session.data?.date);
+  let date = null;
+  try {
+    date = ymdFromDateLike(session.data?.date, BUSINESS_CONFIG.TIME_ZONE);
+  } catch {
+    date = null;
+  }
 
   if (!date) {
     await ctx.answerCbQuery("❌ Спочатку оберіть дату", { show_alert: true });
@@ -66,7 +73,7 @@ export async function timeHandler(ctx) {
 
   try {
     console.log("🧩 getFreeDaySlots args:", {
-      dateISO: date.toISOString(),
+      dateISO: date,
       durationMin,
     });
 
